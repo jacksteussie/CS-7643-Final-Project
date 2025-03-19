@@ -4,3 +4,4 @@
 curl -L -o ./data/xview-dataset.zip https://www.kaggle.com/api/v1/datasets/download/hassanmojab/xview-dataset
 cd ./data/
 unzip xview-dataset.zip
+rm xview-dataset.zip
