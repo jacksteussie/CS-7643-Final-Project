@@ -1,0 +1,16 @@
+name: cs7643-project
+channels:
+  - defaults
+dependencies:
+  - python==3.8.10
+  - matplotlib
+  - pylab
+  - shapely
+  - tqdm
+  - jupyter
+  - pip
+  - pip:
+    - torch
+    - notebook
+    - numpy
+
