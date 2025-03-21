@@ -12,6 +12,9 @@ dependencies:
     - torchvision
     - opencv-python
     - pytorch-lightning
+    - scikit-learn
+    - rasterio
     - notebook
     - numpy
     - pycocotools
+    - Pillow
