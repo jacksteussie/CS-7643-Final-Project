@@ -98,7 +98,7 @@ def process_image(image_info):
         img_classes = np.zeros((0,))
 
     # Chip the image with overlap
-    chips_data, chip_boxes, chip_classes = chip_image_with_overlap(img, img_coords, img_classes, shape=(chunk_w, chunk_h), overlap=overlap)
+    chips_data, chip_boxes, chip_labels = chip_image_with_overlap(img, img_coords, img_classes, shape=(chunk_w, chunk_h), overlap=overlap)
 
     results = []
     for chip_id, chip in enumerate(chips_data):
@@ -111,8 +111,8 @@ def process_image(image_info):
         if split == "train":
             label_filename = chip_filename.replace(".jpg", ".json")
             label_data = {
-                "bboxes": chip_boxes[chip_id],
-                "classes": chip_classes[chip_id]
+                "boxes": chip_boxes[chip_id],
+                "labels": chip_labels[chip_id]
             }
             with open(os.path.join(output_image_dir, label_filename), "w") as f:
                 json.dump(label_data, f)
