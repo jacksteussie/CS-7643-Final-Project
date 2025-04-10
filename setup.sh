@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# WARNING: This script may take a bit but don't worry it'll tell you if it's not working
-# if it doesn't work, try running in root
-curl -L -o ./data/xview-dataset.zip https://www.kaggle.com/api/v1/datasets/download/hassanmojab/xview-dataset
-cd ./data/
-unzip xview-dataset.zip
-rm xview-dataset.zip
-rm __notebook_source__.ipynb
-mv train_images/train_images/* train_images/ && rm -r train_images/train_images
-mv val_images/val_images/* val_images/ && rm -r val_images/val_images
-mkdir xview/
-mkdir xview/train && mv train_images/* xview/train && rm -r train_images
-mkdir xview/val && mv val_images/* xview/val && rm -r val_images
-mv train_labels/xView_train.geojson xview/ && rm -r train_labels
+ZIP_FILE="dotav1-5.zip"
+EXTRACT_FOLDER="DOTAv1.5"
+ROOT_DIR=$(pwd)
+curl -L -o $ZIP_FILE https://github.com/ultralytics/assets/releases/download/v0.0.0/DOTAv1.5.zip
+unzip $ZIP_FILE
+rm $ZIP_FILE
+mkdir -p $ROOT_DIR/data/dota
+mv $EXTRACT_FOLDER/images $ROOT_DIR/data/dota/
+mv $EXTRACT_FOLDER/labels $ROOT_DIR/data/dota/
+rm -r $EXTRACT_FOLDER
+cd src
+python -m split_data.py

@@ -8,13 +8,11 @@ dependencies:
   - jupyter
   - pip
   - pip:
-    - torch
-    - torchvision
     - opencv-python
-    - pytorch-lightning
     - scikit-learn
     - rasterio
     - notebook
     - numpy
     - pycocotools
     - Pillow
+    - ultralytics
