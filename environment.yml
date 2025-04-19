@@ -2,7 +2,8 @@ name: cs7643-project
 channels:
   - defaults
 dependencies:
-  - python==3.8.10
+  # - python==3.8.10
+  - python>=3.10,<3.11
   - matplotlib
   - tqdm
   - jupyter
@@ -16,3 +17,6 @@ dependencies:
     - pycocotools
     - Pillow
     - ultralytics
+    - hydra-core
+    - omegaconf
+    - shapely

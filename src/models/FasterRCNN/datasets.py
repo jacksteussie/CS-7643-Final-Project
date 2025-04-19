@@ -1,6 +1,6 @@
 import os
 import torch
-from const import PROJECT_ROOT, DATA_DIR, DOTA_DIR, DOTA_MOD_DIR
+from const import PROJECT_ROOT, DOTA_DIR, DOTA_MOD_DIR
 
 from torchvision.io import read_image
 from torchvision import tv_tensors
@@ -10,8 +10,8 @@ class DotaDataset(torch.utils.data.Dataset):
     def __init__(self, folder="train", transforms = None):
         self.root = PROJECT_ROOT
         self.transforms = transforms
-        self.imgs = list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR, "images", folder))))
-        self.labels = list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR, "labels", folder))))
+        self.imgs = list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR, "images", folder))))
+        self.labels = list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR, "labels", folder))))
         
     def __len__(self):
         return len(self.imgs)
