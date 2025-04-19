@@ -10,23 +10,23 @@ class DotaDataset(torch.utils.data.Dataset):
     def __init__(self, folder="train", transforms = None):
         self.root = PROJECT_ROOT
         self.transforms = transforms
-        self.imgs = list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR, "images", folder))))
-        self.labels = list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR, "labels", folder))))
+        self.imgs = [os.path.join(DOTA_MOD_DIR, "images", folder, x) for x in list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR, "images", folder))))]
+        self.labels = [os.path.join(DOTA_MOD_DIR, "labels", folder, x) for x in list(sorted(os.listdir(os.path.join(DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR, "labels", folder))))]
         
     def __len__(self):
         return len(self.imgs)
     
-    def read_labels(file_path):
+    def read_labels(self, file_path):
         labels = []
         coordinates_list = []
         with open(file_path, 'r') as f:
             for line in f:
-                parts = line.strip().split(',')
+                parts = line.replace(" ", ",").strip().split(',')
                 class_number = int(parts[0])
-                coordinates = list(map(float, parts[1:]))
+                coordinates = [float(x) for x in parts[1:]]
                 labels.append(class_number)
-                coordinates_list.append(coordinates_list)
-        return labels, coordinates
+                coordinates_list.append(coordinates)
+        return labels, coordinates_list
     
     def __getitem__(self, idx):
         # Bounding box definition: https://docs.ultralytics.com/datasets/obb/#yolo-obb-format 

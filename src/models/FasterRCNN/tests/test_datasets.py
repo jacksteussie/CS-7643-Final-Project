@@ -11,6 +11,11 @@ class TestDotaDatasetLoader(unittest.TestCase):
     def test_size(self):
         assert len(self.val_dataset) == 9859
 
+    def test_labelcorrectness(self):
+        _, target = self.val_dataset[10]
+        assert "P0007__1024__466___1113" in target["image_id"]
+        assert len(target["labels"]) == 60
+
     def tearDown(self) -> None:
         return super().tearDown()
 
