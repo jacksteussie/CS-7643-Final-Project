@@ -87,7 +87,7 @@ else
 fi
 echo "🔥 PyTorch installed"
 
-echo "🛰️ (Re)Installing DOTA dev kit..."
+echo "🛰️ Installing DOTA dev kit..."
 cd src
 if [[ -d DOTA_devkit ]]; then
   echo "🧹 Removing existing DOTA_devkit..."
@@ -95,6 +95,48 @@ if [[ -d DOTA_devkit ]]; then
 fi
 git clone https://github.com/CAPTAIN-WHU/DOTA_devkit.git
 cd DOTA_devkit
+echo "🔍 Checking and installing SWIG..."
+
+if ! command -v swig &> /dev/null; then
+  echo "SWIG not found. Attempting installation..."
+
+  case "$(uname -s)" in
+    Darwin)
+      echo "🍎 macOS detected"
+      if command -v brew &> /dev/null; then
+        brew install swig
+      else
+        echo "❌ Homebrew not found. Please install Homebrew and rerun the script."
+        exit 1
+      fi
+      ;;
+
+    Linux)
+      echo "🐧 Linux detected"
+      if command -v apt-get &> /dev/null; then
+        sudo apt-get update && sudo apt-get install -y swig
+      elif command -v yum &> /dev/null; then
+        sudo yum install -y swig
+      else
+        echo "❌ No supported package manager found. Please install SWIG manually."
+        exit 1
+      fi
+      ;;
+
+    MINGW*|MSYS*|CYGWIN*|Windows_NT)
+      echo "🪟 Windows detected"
+      echo "📦 Please install SWIG manually from https://www.swig.org/download.html and ensure it is in your PATH."
+      read -p "Press Enter after installing SWIG..."
+      ;;
+
+    *)
+      echo "❌ Unknown OS: $(uname -s). Please install SWIG manually."
+      exit 1
+      ;;
+  esac
+else
+  echo "✅ SWIG already installed"
+fi
 swig -c++ -python polyiou.i
 python setup.py build_ext --inplace
 echo "✅ DOTA dev kit installed!"

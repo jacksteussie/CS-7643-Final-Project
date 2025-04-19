@@ -112,8 +112,8 @@ def train(cfg: DictConfig):
 
     for epoch in range(cfg.training.epochs):
         train_step(model, optimizer, data_loader_train, device, epoch)
-        lr_scheduler.step()
-        val_step(model, data_loader_val, device=device)
+        # lr_scheduler.step()
+        # val_step()
 
 
 if __name__ == "__main__":
