@@ -75,7 +75,7 @@ def train(cfg: DictConfig):
 
         score_thresh=cfg.model.score_thresh,
         nms_thresh=cfg.model.nms_thresh,
-        detections_per_img=cfg.detections_per_image,  # You could also make this configurable
+        detections_per_img=cfg.model.detections_per_image,  # You could also make this configurable
         reg_max=cfg.model.reg_max
     )
 
