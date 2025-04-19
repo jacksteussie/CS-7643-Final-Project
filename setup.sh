@@ -53,6 +53,10 @@ for arg in "$@"; do
   esac
 done
 
+ZIP_FILE="dotav1-5.zip"
+EXTRACT_FOLDER="DOTAv1.5"
+ROOT_DIR=$(pwd)
+
 # Load conda env
 CONDA_BASE="$(conda info --base)"
 if [[ -f "$CONDA_BASE/etc/profile.d/conda.sh" ]]; then
@@ -61,9 +65,16 @@ else
   source "$CONDA_BASE/bin/activate"
 fi
 
-echo "🔧 Creating conda environment..."
-conda env create -f environment.yaml || true
+echo "🔧 Setting up conda environment..."
+if conda env list | grep -q "cs7643-project"; then
+  echo "🔄 Updating existing conda environment... (cs7643-project)"
+  conda env update -f environment.yaml --prune ||  echo "⚠️ Conda update failed, continuing..."
+else
+  echo "🆕 Creating new conda environment... (cs7643-project)"
+  conda env create -f environment.yaml || true
+fi
 echo "🚀 Conda environment ready"
+
 
 echo "📦 Activating environment..."
 conda activate cs7643-project
@@ -76,12 +87,21 @@ else
 fi
 echo "🔥 PyTorch installed"
 
+echo "🛰️ (Re)Installing DOTA dev kit..."
+cd src
+if [[ -d DOTA_devkit ]]; then
+  echo "🧹 Removing existing DOTA_devkit..."
+  rm -rf DOTA_devkit
+fi
+git clone https://github.com/CAPTAIN-WHU/DOTA_devkit.git
+cd DOTA_devkit
+swig -c++ -python polyiou.i
+python setup.py build_ext --inplace
+echo "✅ DOTA dev kit installed!"
+cd "$ROOT_DIR"
+
 if [[ "$DO_DOWNLOAD" == true ]]; then
   echo "📥 Downloading DOTA dataset..."
-  ZIP_FILE="dotav1-5.zip"
-  EXTRACT_FOLDER="DOTAv1.5"
-  ROOT_DIR=$(pwd)
-
   curl -L -o "$ZIP_FILE" https://github.com/ultralytics/assets/releases/download/v0.0.0/DOTAv1.5.zip
   unzip "$ZIP_FILE"
   rm "$ZIP_FILE"
@@ -97,3 +117,5 @@ if [[ "$DO_SPLIT" == true ]]; then
   cd src
   python -m split_data.py
 fi
+
+echo "Environment ready! Happy training! 🙂"

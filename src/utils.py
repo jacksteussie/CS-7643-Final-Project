@@ -1,7 +1,27 @@
 import torch
 from shapely.geometry import Polygon
+import cv2
+import numpy as np
 
-def obb_to_xywha(quad: torch.Tensor) -> torch.Tensor:
+def norm_quad_to_rotated_rect(quad, img_w, img_h):
+    quad = quad.clone()
+    quad[:, 0::2] *= img_w  # x coords
+    quad[:, 1::2] *= img_h  # y coords
+
+    rotated_boxes = []
+    for q in quad:
+        points = q.view(4, 2).cpu().numpy().astype(np.float32)
+        rect = cv2.minAreaRect(points)  # ((cx, cy), (w, h), angle)
+        (cx, cy), (w, h), angle = rect
+        if w < h:
+            w, h = h, w
+            angle += 90
+        rotated_boxes.append([cx, cy, w, h, angle])
+
+    return torch.tensor(rotated_boxes, dtype=torch.float32)
+
+
+def quad_to_xywha(quad: torch.Tensor) -> torch.Tensor:
     """
     Convert quadrilateral boxes (8 coords) to rotated boxes: [cx, cy, w, h, angle]
 

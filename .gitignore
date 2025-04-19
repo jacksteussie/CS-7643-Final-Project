@@ -9,4 +9,4 @@ runs/
 .tmp/
 outputs/
 .vscode/
-detectron2/
+DOTA_devkit

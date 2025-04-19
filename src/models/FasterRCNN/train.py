@@ -13,9 +13,12 @@ from omegaconf import DictConfig, OmegaConf
 from .datasets import DotaDataset
 from .model import FastRCNNDFLPredictor, RotatedRoIHeads
 
-def train_step(model: FasterRCNN, ):
-    # TODO: train one epoch over training set
+logger = logging.getLogger(__name__)
+
+def train_step(model, optimizer, data_loader, device, epoch):
+    # TODO: validate with the val dataset
     ...
+
 
 def val_step():
     # TODO: validate with the val dataset
@@ -27,7 +30,7 @@ def test_step():
 
 @hydra.main(config_path="configs", config_name="config", version_base="1.3")
 def train(cfg: DictConfig):
-    logger = logging.getLogger(__name__)
+    
     logger.info("🔧 Training Config:")
     logger.info(OmegaConf.to_yaml(cfg))
 
