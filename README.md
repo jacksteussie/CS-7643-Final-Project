@@ -1,30 +1,30 @@
 # Aerial Object Detection with DOTA
 
+## Dependencies
+
+- conda (of any form, but we recommend using Miniconda)
+- git
+
 ## Environment Setup
 Before running, run the following in your terminal:
-
-```bash
-conda env create -n environment.yaml
-```
-
-After that, do this if you have NVIDIA GPU:
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-```
-
-and this if you are using only CPU:
-```bash
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-```
-
 Before you run the `setup.sh` script, make sure, if needed, you change the parameters in `src/split_data.py` to match your needs. This file splits the data such that there are multiple resolutions used in the dataset. If single scale is being
 used, make sure to just set `DOTA_MOD_DIR=None` in `src/const.py`. 
 
 Now run 
 ```bash
-bash setup.sh
+bash setup.sh cuda=true
 ```
-to download the dataset and split it if it's setup for that. 
+if you have a GPU and want to use it. If you don't have a GPU, run 
+```bash
+bash setup.sh cuda=false
+```
+This will create a conda environment called `cs7643-project` and install all the required packages.
+It will also download the dataset and split it if it's setup for that. 
+
+If you don't want to download the dataset or don't want to split it, you can run the following commands:
+```bash
+bash setup.sh cuda=true download=false split=false
+```
 
 ## Dataset
 
