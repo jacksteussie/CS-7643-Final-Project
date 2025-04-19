@@ -9,3 +9,4 @@ runs/
 .tmp/
 outputs/
 .vscode/
+detectron2/

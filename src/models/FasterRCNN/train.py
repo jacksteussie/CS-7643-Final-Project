@@ -11,7 +11,7 @@ from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 
 from .datasets import DotaDataset
-from .model import FastRCNNDFLPredictor
+from .model import FastRCNNDFLPredictor, RotatedRoIHeads
 
 def train_step(model: FasterRCNN, ):
     # TODO: train one epoch over training set
@@ -28,66 +28,71 @@ def test_step():
 @hydra.main(config_path="configs", config_name="config", version_base="1.3")
 def train(cfg: DictConfig):
     logger = logging.getLogger(__name__)
-
     logger.info("🔧 Training Config:")
     logger.info(OmegaConf.to_yaml(cfg))
-
-    # instantiate configured values
-    num_classes = cfg.model.num_classes
-    model_backbone = cfg.model.backbone # resnet or mobilenet
-    batch_size = cfg.training.batch_size
-    epochs = cfg.training.epochs
 
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     train_dataset = DotaDataset()
     val_dataset = DotaDataset(folder="val")
 
     data_loader_train = torch.utils.data.DataLoader(
-        train_dataset,
-        batch_size=batch_size,
-        shuffle=True,
-        # collate_fn=torch.utils.collate_fn # TODO: is this needed?
+        train_dataset, batch_size=cfg.training.batch_size, shuffle=True
     )
-
     data_loader_val = torch.utils.data.DataLoader(
-        val_dataset,
-        batch_size=1,
-        shuffle=False,
-        # collate_fn=torch.utils.collate_fn # TODO: is this needed?
+        val_dataset, batch_size=1, shuffle=False
     )
 
-    match model_backbone:
+    match cfg.model.backbone:
         case "mobilenet":
             model = fasterrcnn_mobilenet_v3_large_fpn(
-                weights=None, # debating on whether to use COCO or not...
+                weights=None,
                 weights_backbone=MobileNet_V3_Large_Weights.IMAGENET1K_V2,
             )
         case "resnet":
             model = fasterrcnn_resnet50_fpn_v2(
                 weights=None,
-                weigts_backbone=ResNet50_Weights.IMAGENET1K_V2,
+                weights_backbone=ResNet50_Weights.IMAGENET1K_V2,
             )
         case _:
-            raise ValueError(f"backbone name in the configuration file was set as {model_backbone}")
-    
-    # replace the head of the model
-    in_feats = model.roi_heads.box_predictor.cls_score.in_features
-    model.roi_heads.box_predictor = FastRCNNDFLPredictor(in_feats, num_classes, reg_max=16)
+            raise ValueError(f"Unknown backbone '{cfg.model.backbone}'")
 
+    # Replace the head
+    in_feats = model.roi_heads.box_predictor.cls_score.in_features
+    model.roi_heads.box_predictor = FastRCNNDFLPredictor(in_feats, cfg.model.num_classes, reg_max=cfg.model.reg_max)
+
+    # Replace RoIHeads with rotated-aware variant
+    orig = model.roi_heads
+    model.roi_heads = RotatedRoIHeads(
+        box_roi_pool=model.roi_heads.box_roi_pool,
+        box_head=model.roi_heads.box_head,
+        box_predictor=model.roi_heads.box_predictor,
+
+        fg_iou_thresh=cfg.model.fg_iou_thresh,
+        bg_iou_thresh=cfg.model.bg_iou_thresh,
+        batch_size_per_image=cfg.model.batch_size_per_image,
+        positive_fraction=cfg.model.positive_fraction,
+        bbox_reg_weights=None,  # you can later add this to the config if you want to tune it
+
+        score_thresh=cfg.model.score_thresh,
+        nms_thresh=cfg.model.nms_thresh,
+        detections_per_img=cfg.detections_per_image,  # You could also make this configurable
+        reg_max=cfg.model.reg_max
+    )
+
+    model.to(device)
+
+    # Freeze backbone
     for p in model.backbone.parameters():
         p.requires_grad = False
 
-    # we have the option to use different optimization parameters for the backbone and the head
+    # Set up parameter groups
     param_groups = []
-
     for group_cfg in cfg.optimizer.param_groups:
         name = group_cfg.name
-        params = []
-
         if name == "backbone":
-            params = [p for n, p in model.backbone.named_parameters() if p.requires_grad]
+            params = [p for _, p in model.backbone.named_parameters() if p.requires_grad]
         elif name == "head":
-            params = [p for n, p in model.roi_heads.named_parameters() if p.requires_grad]
+            params = [p for _, p in model.roi_heads.named_parameters() if p.requires_grad]
         else:
             raise ValueError(f"Unknown param group name: {name}")
 
@@ -99,21 +104,14 @@ def train(cfg: DictConfig):
     optimizer_cfg = OmegaConf.to_container(cfg.optimizer, resolve=True)
     optimizer_cfg.pop("param_groups", None)
 
-    optimizer = instantiate(
-        optimizer_cfg,
-        param_groups,
-        _convert_="partial"
-    )
-    
+    optimizer = instantiate(optimizer_cfg, param_groups, _convert_="partial")
     lr_scheduler = instantiate(cfg.scheduler, optimizer=optimizer)
 
-    for epoch in range(epochs):
-        # train for one epoch
+    for epoch in range(cfg.training.epochs):
         train_step(model, optimizer, data_loader_train, device, epoch)
-        # update the learning rate
         lr_scheduler.step()
-        # evaluate on the val dataset
         val_step(model, data_loader_val, device=device)
+
 
 if __name__ == "__main__":
     train()
