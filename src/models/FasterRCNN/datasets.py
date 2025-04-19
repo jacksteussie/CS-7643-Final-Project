@@ -37,10 +37,11 @@ class DotaDataset(torch.utils.data.Dataset):
         label_path = self.labels[idx]
         img = read_image(img_path)
         labels, box_coords = self.read_labels(label_path)
+        box_coords = torch.as_tensor(box_coords)
 
         img = tv_tensors.Image(img)
         target = {}
-        target["boxes"] = tv_tensors.BoundingBoxes(box_coords, format="XYXYXYXY", canvas_size=F.get_size(img)) # TODO: are normalized coords ok here?
+        target["boxes"] = tv_tensors.BoundingBoxes(box_coords, format=tv_tensors.BoundingBoxFormat.XYXY, canvas_size=F.get_size(img)) # TODO: are normalized coords ok here?
         target["labels"] = labels
         target["image_id"] = idx
         

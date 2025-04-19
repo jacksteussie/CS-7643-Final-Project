@@ -13,8 +13,10 @@ class TestDotaDatasetLoader(unittest.TestCase):
 
     def test_labelcorrectness(self):
         _, target = self.val_dataset[10]
-        assert "P0007__1024__466___1113" in target["image_id"]
+        assert target["image_id"] == 10
         assert len(target["labels"]) == 60
+        assert [target["labels"][x] == 9 for x in range(41)]
+        assert [target["labels"][x] == 10 for x in range(42, 58)]
 
     def tearDown(self) -> None:
         return super().tearDown()
