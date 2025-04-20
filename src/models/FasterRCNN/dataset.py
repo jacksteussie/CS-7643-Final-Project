@@ -6,8 +6,10 @@ import logging
 from torchvision.io import read_image
 from torchvision import tv_tensors
 from torchvision.transforms.v2 import functional as F
+from torch.utils.data import DataLoader
+from pytorch_lightning import LightningDataModule
 
-from utils import norm_quad_to_rotated_rect
+from utils import norm_quad_to_aabb
 
 logger = logging.getLogger(__name__)
 
@@ -72,16 +74,24 @@ class DotaDataset(torch.utils.data.Dataset):
         label_path = self.labels[idx]
         img = read_image(img_path)  # shape: [3, H, W], dtype: uint8
         img = tv_tensors.Image(img)
+        img = img.float() / 255.0
 
         labels, box_coords = self.read_labels(label_path)
         box_coords = torch.tensor(box_coords, dtype=torch.float32)
 
+        if box_coords.ndim == 1:
+            box_coords = box_coords.unsqueeze(0)
+
         h, w = F.get_size(img)
-        rotated_boxes = norm_quad_to_rotated_rect(box_coords, w, h)  # [N, 5]
+        aabb_boxes = norm_quad_to_aabb(box_coords, w, h)  # [N, 4]
+
+        if aabb_boxes.ndim != 2 or aabb_boxes.shape[1] != 4:
+            logger.warning(f"⚠️ Skipping item at index {idx} due to invalid box shape: {aabb_boxes.shape}")
+            return self.__getitem__((idx + 1) % len(self))
 
         target = {
-            "boxes": rotated_boxes,                            # [cx, cy, w, h, angle]
-            "labels": torch.tensor(labels, dtype=torch.int64)  # class indices
+            "boxes": aabb_boxes,
+            "labels": torch.tensor(labels, dtype=torch.int64)
         }
 
         if self.transforms:
@@ -90,4 +100,33 @@ class DotaDataset(torch.utils.data.Dataset):
         return img, target
 
 
+class DotaDataModule(LightningDataModule):
+    def __init__(self, batch_size=4, num_workers=4, transforms=None):
+        super().__init__()
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        self.transforms = transforms
 
+    def setup(self, stage=None):
+        self.train_dataset = DotaDataset(folder="train", transforms=self.transforms)
+        self.val_dataset = DotaDataset(folder="val", transforms=self.transforms)
+
+        test_label_dir = os.path.join(DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR, "labels", "test")
+        if os.path.exists(test_label_dir) and len(os.listdir(test_label_dir)) > 0:
+            self.test_dataset = DotaDataset(folder="test", transforms=self.transforms)
+        else:
+            self.test_dataset = None
+            logger.warning("⚠️ Test dataset skipped — no label files found.")
+
+
+    def train_dataloader(self):
+        return DataLoader(self.train_dataset, batch_size=self.batch_size,
+                          shuffle=True, num_workers=self.num_workers, collate_fn=self.collate_fn)
+
+    def val_dataloader(self):
+        return DataLoader(self.val_dataset, batch_size=self.batch_size,
+                          shuffle=False, num_workers=self.num_workers, collate_fn=self.collate_fn)
+
+    @staticmethod
+    def collate_fn(batch):
+        return tuple(zip(*batch))  # Needed for detection models

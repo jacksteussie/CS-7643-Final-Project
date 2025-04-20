@@ -87,6 +87,10 @@ else
 fi
 echo "🔥 PyTorch installed"
 
+echo "⚡ Installing pytorch-lightning..."
+pip install pytorch-lightning
+echo "⚡️ pytorch-lightning installed!"
+
 echo "🛰️ Installing DOTA dev kit..."
 cd src
 if [[ -d DOTA_devkit ]]; then

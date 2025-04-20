@@ -1,10 +1,4 @@
 _target_: torch.optim.SGD
-param_groups:
-  - name: backbone
-    lr: 0.0001
-    momentum: 0.8
-    weight_decay: 0.0001
-  - name: head
-    lr: 0.001
-    momentum: 0.9
-    weight_decay: 0.0005
+lr: 0.0001
+momentum: 0.8
+weight_decay: 0.0001

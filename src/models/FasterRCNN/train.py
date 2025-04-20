@@ -1,32 +1,17 @@
 import logging
 import torch
-import torch.utils
-import torch.utils.data
-from torchvision.models.detection import fasterrcnn_mobilenet_v3_large_fpn, fasterrcnn_resnet50_fpn_v2, FasterRCNN
-from torchvision.models.detection import FasterRCNN_MobileNet_V3_Large_FPN_Weights, FasterRCNN_ResNet50_FPN_V2_Weights
-from torchvision.models.mobilenetv3 import MobileNet_V3_Large_Weights
-from torchvision.models.resnet import ResNet50_Weights
 import hydra
 from hydra.utils import instantiate 
 from omegaconf import DictConfig, OmegaConf
+from pytorch_lightning import Trainer
+from pytorch_lightning.callbacks import ModelCheckpoint
+from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_ResNet50_FPN_V2_Weights
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
-from .datasets import DotaDataset
-from .model import FastRCNNDFLPredictor, RotatedRoIHeads
+from .dataset import DotaDataModule
+from .model import DotaLightningModel
 
 logger = logging.getLogger(__name__)
-
-def train_step(model, optimizer, data_loader, device, epoch):
-    # TODO: validate with the val dataset
-    ...
-
-
-def val_step():
-    # TODO: validate with the val dataset
-    ...
-
-def test_step():
-    # TODO: test on holdout (a.k.a. test) set (should this maybe be a separate script? we could just make a single "experiment" script here)
-    ...
 
 @hydra.main(config_path="configs", config_name="config", version_base="1.3")
 def train(cfg: DictConfig):
@@ -35,60 +20,13 @@ def train(cfg: DictConfig):
     logger.info(OmegaConf.to_yaml(cfg))
 
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    train_dataset = DotaDataset()
-    val_dataset = DotaDataset(folder="val")
+    
+    weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
+    model = fasterrcnn_resnet50_fpn_v2(weights=weights)
+    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, cfg.data.num_classes)
 
-    data_loader_train = torch.utils.data.DataLoader(
-        train_dataset, batch_size=cfg.training.batch_size, shuffle=True
-    )
-    data_loader_val = torch.utils.data.DataLoader(
-        val_dataset, batch_size=1, shuffle=False
-    )
-
-    match cfg.model.backbone:
-        case "mobilenet":
-            model = fasterrcnn_mobilenet_v3_large_fpn(
-                weights=None,
-                weights_backbone=MobileNet_V3_Large_Weights.IMAGENET1K_V2,
-            )
-        case "resnet":
-            model = fasterrcnn_resnet50_fpn_v2(
-                weights=None,
-                weights_backbone=ResNet50_Weights.IMAGENET1K_V2,
-            )
-        case _:
-            raise ValueError(f"Unknown backbone '{cfg.model.backbone}'")
-
-    # Replace the head
-    in_feats = model.roi_heads.box_predictor.cls_score.in_features
-    model.roi_heads.box_predictor = FastRCNNDFLPredictor(in_feats, cfg.model.num_classes, reg_max=cfg.model.reg_max)
-
-    # Replace RoIHeads with rotated-aware variant
-    orig = model.roi_heads
-    model.roi_heads = RotatedRoIHeads(
-        box_roi_pool=model.roi_heads.box_roi_pool,
-        box_head=model.roi_heads.box_head,
-        box_predictor=model.roi_heads.box_predictor,
-
-        fg_iou_thresh=cfg.model.fg_iou_thresh,
-        bg_iou_thresh=cfg.model.bg_iou_thresh,
-        batch_size_per_image=cfg.model.batch_size_per_image,
-        positive_fraction=cfg.model.positive_fraction,
-        bbox_reg_weights=None,  # you can later add this to the config if you want to tune it
-
-        score_thresh=cfg.model.score_thresh,
-        nms_thresh=cfg.model.nms_thresh,
-        detections_per_img=cfg.model.detections_per_image,  # You could also make this configurable
-        reg_max=cfg.model.reg_max
-    )
-
-    model.to(device)
-
-    # Freeze backbone
-    for p in model.backbone.parameters():
-        p.requires_grad = False
-
-    # Set up parameter groups
+    # Set up parameter groups dynamically
     param_groups = []
     for group_cfg in cfg.optimizer.param_groups:
         name = group_cfg.name
@@ -106,15 +44,44 @@ def train(cfg: DictConfig):
 
     optimizer_cfg = OmegaConf.to_container(cfg.optimizer, resolve=True)
     optimizer_cfg.pop("param_groups", None)
-
     optimizer = instantiate(optimizer_cfg, param_groups, _convert_="partial")
-    lr_scheduler = instantiate(cfg.scheduler, optimizer=optimizer)
 
-    for epoch in range(cfg.training.epochs):
-        train_step(model, optimizer, data_loader_train, device, epoch)
-        # lr_scheduler.step()
-        # val_step()
+    model = DotaLightningModel(
+        model=model, 
+        optimizer=optimizer
+    )
 
+    datamodule = DotaDataModule(
+        batch_size=cfg.training.batch_size,
+        num_workers=cfg.training.num_workers,
+        transforms=None  # or replace with actual transforms
+    )
+
+    # ✅ Add a ModelCheckpoint callback
+    checkpoint_callback = ModelCheckpoint(
+        dirpath=cfg.training.output_dir,
+        filename="dota-model-{epoch:02d}-{val_loss:.2f}",
+        save_top_k=1,
+        verbose=True,
+        monitor="val_loss",
+        mode="min"
+    )
+
+    trainer = Trainer(
+        max_epochs=cfg.training.epochs,
+        accelerator="gpu" if torch.cuda.is_available() else "cpu",
+        devices=1,
+        log_every_n_steps=cfg.training.log_every_n_steps,
+        default_root_dir=cfg.training.output_dir,
+        precision=cfg.training.precision,
+        callbacks=[checkpoint_callback],
+    )
+
+    trainer.fit(
+        model,
+        datamodule=datamodule,
+        ckpt_path=cfg.training.get("resume_from_checkpoint", None)
+    )
 
 if __name__ == "__main__":
     train()
