@@ -9,6 +9,7 @@ if DOTA_MOD_DIR:
         rates=[1.0],  # multiscale
         crop_size=640,
         gap=128,
+
     )
     # split test set, without labels.
     split_test(
