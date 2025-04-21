@@ -7,13 +7,15 @@ if DOTA_MOD_DIR:
         data_root=DOTA_DIR,
         save_dir=DOTA_MOD_DIR,
         rates=[1.0],  # multiscale
-        gap=500,
+        crop_size=640,
+        gap=128,
     )
     # split test set, without labels.
     split_test(
         data_root=DOTA_DIR,
         save_dir=DOTA_MOD_DIR,
         rates=[1.0],  # multiscale
-        gap=500,
+        crop_size=640,
+        gap=128,
     )
 
