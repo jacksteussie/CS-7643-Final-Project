@@ -21,16 +21,33 @@ def train(cfg: DictConfig):
 
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     
+    # 1) instantiate the pretrained Faster R-CNN
     weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
     model = fasterrcnn_resnet50_fpn_v2(weights=weights)
+
+    # ─── 2) FREEZE THE BACKBONE ────────────────────────────────────────────
+    # freeze all ResNet layers:
+    for param in model.backbone.body.parameters():
+        param.requires_grad = False
+    # freeze all FPN layers:
+    for param in model.backbone.fpn.parameters():
+        param.requires_grad = False
+    # (optional) set frozen BatchNorms to eval mode so they use running stats:
+    for m in model.backbone.modules():
+        if isinstance(m, torch.nn.BatchNorm2d):
+            m.eval()
+    # ──────────────────────────────────────────────────────────────────────
+
+    # 3) swap in a fresh predictor head (its params remain requires_grad=True)
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, cfg.data.num_classes)
 
-    # Set up parameter groups dynamically
+    # 4) build optimizer param_groups by only grabbing .requires_grad==True
     param_groups = []
     for group_cfg in cfg.optimizer.param_groups:
         name = group_cfg.name
         if name == "backbone":
+            # this will now be empty, since we froze it
             params = [p for _, p in model.backbone.named_parameters() if p.requires_grad]
         elif name == "head":
             params = [p for _, p in model.roi_heads.named_parameters() if p.requires_grad]
@@ -57,14 +74,13 @@ def train(cfg: DictConfig):
         transforms=None  # or replace with actual transforms
     )
 
-    # ✅ Add a ModelCheckpoint callback
     checkpoint_callback = ModelCheckpoint(
         dirpath=cfg.training.output_dir,
-        filename="dota-model-{epoch:02d}-{val_loss:.2f}",
+        filename="dota-model-{epoch:02d}-{map_50:.3f}",
         save_top_k=1,
         verbose=True,
-        monitor="val_loss",
-        mode="min"
+        monitor="map_50",    # ← now watches your validation mAP@.50
+        mode="max"           # ← higher map_50 is better
     )
 
     trainer = Trainer(
