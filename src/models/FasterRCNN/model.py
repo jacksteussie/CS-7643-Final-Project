@@ -7,11 +7,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DotaLightningModel(pl.LightningModule):
-    def __init__(self, model, optimizer):
+    def __init__(self, model, optimizer, scheduler):
         super().__init__()
         self.model = model
         self.optimizer = optimizer
-        self.metric = MeanAveragePrecision()
+        self.scheduler = scheduler
+        self.metric = MeanAveragePrecision(iou_thresholds=[0.5])
 
     def forward(self, images, targets=None):
         return self.model(images, targets)
@@ -46,4 +47,7 @@ class DotaLightningModel(pl.LightningModule):
         self.metric.reset()
 
     def configure_optimizers(self):
-        return self.optimizer
+        optimizer = self.optimizer
+        scheduler = self.scheduler
+        return [optimizer], [scheduler]
+

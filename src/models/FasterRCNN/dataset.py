@@ -8,6 +8,7 @@ from torchvision import tv_tensors
 from torchvision.transforms.v2 import functional as F
 from torch.utils.data import DataLoader
 from pytorch_lightning import LightningDataModule
+from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights
 
 from utils import norm_quad_to_aabb
 
@@ -20,6 +21,9 @@ class DotaDataset(torch.utils.data.Dataset):
         base_dir = DOTA_MOD_DIR if DOTA_MOD_DIR else DOTA_DIR
         image_dir = os.path.join(base_dir, "images", folder)
         label_dir = os.path.join(base_dir, "labels", folder)
+
+        self.weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
+        self.transform = self.weights.transforms()
 
         logger.debug(f"BASE_DIR: {base_dir}")
         logger.debug(f"IMAGE_DIR: {image_dir}")
@@ -98,6 +102,37 @@ class DotaDataset(torch.utils.data.Dataset):
             img, target = self.transforms(img, target)
 
         return img, target
+    # def __getitem__(self, idx):
+    #     img_path   = self.imgs[idx]
+    #     label_path = self.labels[idx]
+
+    #     # 1) load image as [C,H,W] float tensor in [0,1]
+    #     img = read_image(img_path).float().div(255.0)
+
+    #     # 2) read your normalized quad coords → absolute AABB
+    #     labels, quads = self.read_labels(label_path)
+    #     quads = torch.tensor(quads, dtype=torch.float32)
+    #     if quads.ndim == 1:
+    #         quads = quads.unsqueeze(0)
+
+    #     # get width & height from tensor
+    #     _, h, w = img.shape
+    #     boxes = norm_quad_to_aabb(quads, w, h)  # [N,4]
+
+    #     # 3) shift labels so 0 → background, real classes start at 1
+    #     labels = torch.tensor(labels, dtype=torch.int64).add(1)
+
+    #     target = {
+    #         "boxes":  boxes,
+    #         "labels": labels,
+    #     }
+
+    #     # 4) apply any detection-style transforms (e.g. GeneralizedRCNNTransform)
+    #     if self.transforms:
+    #         img, target = self.transforms(img, target)
+
+    #     return img, target
+
 
 
 class DotaDataModule(LightningDataModule):
@@ -127,6 +162,10 @@ class DotaDataModule(LightningDataModule):
         return DataLoader(self.val_dataset, batch_size=self.batch_size,
                           shuffle=False, num_workers=self.num_workers, collate_fn=self.collate_fn)
 
+    # @staticmethod
+    # def collate_fn(batch):
+    #     return tuple(zip(*batch))  # Needed for detection models
     @staticmethod
     def collate_fn(batch):
-        return tuple(zip(*batch))  # Needed for detection models
+        imgs, tgts = zip(*batch)
+        return list(imgs), list(tgts)
