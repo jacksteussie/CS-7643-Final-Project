@@ -1,6 +1,6 @@
 defaults:
   - _self_ 
-  - optimizer: sgd
+  - optimizer: sgd2
   - scheduler: steplr
 
 hydra:
@@ -20,14 +20,17 @@ hydra:
       handlers: [console]
       level: INFO
 data:
-  num_classes: 16 # for Dotav1.5 this has to be 16
+  num_classes: null # for Dotav1.5 this has to be 16
 
 training:
   batch_size: 4
-  epochs: 100
+  epochs: 200
   num_workers: 8
   log_every_n_steps: 1
-  save_every_n_steps: 100
+  save_every_n_steps: 50
   save_dir: ./checkpoints
   output_dir: ./outputs
   precision: 32
+  resume_from_checkpoint: /root/dev/CS-7643-Final-Project/src/checkpoints/dota-epoch=99-map_50=0.456.ckpt
+  unfreeze_epoch: 100
+  overfit_batches: 0
