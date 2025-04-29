@@ -8,15 +8,16 @@ dependencies:
   - jupyter
   - pip
   - pip:
-    - opencv-python
-    - scikit-learn
-    - rasterio
-    - notebook
-    - numpy
-    - pycocotools
-    - Pillow
-    - ultralytics
-    - hydra-core
-    - omegaconf
-    - shapely
-    - tqdm
+      - opencv-python
+      - scikit-learn
+      - rasterio
+      - notebook
+      - numpy
+      - pycocotools
+      - Pillow
+      - ultralytics
+      - hydra-core
+      - omegaconf
+      - shapely
+      - tqdm
+      - rich
