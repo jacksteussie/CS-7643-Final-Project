@@ -1,0 +1,15 @@
+path: data/dota-mod
+
+train: images/train
+val: images/val
+test: images/test
+
+nc: 16
+
+names:
+  [
+    'plane', 'ship', 'storage-tank', 'baseball-diamond', 'tennis-court',
+    'basketball-court', 'ground-track-field', 'harbor', 'bridge', 'large-vehicle',
+    'small-vehicle', 'helicopter', 'roundabout', 'soccer-ball-field', 'swimming-pool',
+    'container-crane'
+  ]

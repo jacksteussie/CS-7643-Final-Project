@@ -53,3 +53,25 @@ The RoI Transformer creates checkpoints at each iteration, to avoid uploading ex
 Additionally, the following files need to be downloaded from the OBBDetection repo for the code to build properly:
 - OBBDetection/mmdet/models
 - OBBDetection/mmdet/ops
+
+## Faster RCNN (AABB) Instructions
+
+cd into the `src/` directory and run ```python -m models.FasterRCNN.train``` to train the model. 
+Any parameters can be changed in the config files residing within `src/models/FasterRCNN/configs/`. 
+The model will save the best weights to the `src/checkpoints/` directory. 
+Visualizations of the model results can be found in the jupyter notebook at `src/viz.ipynb`. 
+
+## Yolo Instructions
+### all within models/YOLO
+
+1. Compare 3 yolo model sizes: 
+- run yolo_experiments_3models_10epochs.py
+- run plot_3models_10epochs.py to get the results plots.
+2. Train 50 epoch medium model:
+- run yolo_experiments_mModel_50epochs.py
+3. Plot train and validation losses:
+- run plot_train_val_mModel_50epochs.py
+4. Plot mAP validation
+- run plot_map50.py
+5. Predict on test file: 
+- run predict.py
