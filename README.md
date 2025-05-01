@@ -50,4 +50,5 @@ The dataset contains the following classes:
 
 ## RoI Transformer
 The RoI Transformer creates checkpoints at each iteration, to avoid uploading excess data, these chekpoints are omitted here. Please see "RoI_contributions.txt" for details.
-Additionally, the build files from OBBDetection need be downloaded locally for the code to compile properly.
+Additionally, the following files need to be downloaded from the OBBDetection repo for the code to build properly:
+OBBDetection/mmdet/models
