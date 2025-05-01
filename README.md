@@ -26,6 +26,8 @@ If you don't want to download the dataset or don't want to split it, you can run
 bash setup.sh cuda=true download=false split=false
 ```
 
+The transformer has a separate build script to run, so run that one instead for a separate environment.
+
 ## Dataset
 
 The DOTA dataset is a large-scale aerial image dataset for object detection. It contains images with various objects, including planes, ships, storage tanks, and more. The dataset is divided into training and testing sets, with annotations provided in the form of bounding boxes.
