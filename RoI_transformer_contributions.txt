@@ -15,3 +15,4 @@ BboxToolkit/tools/split_configs/dota1_5/custom_ss_dota_train_realtime.json
 
 In addition to these files, I made amendments to several files in the repository to address package versioning issues. 
 
+Checkpoint files can be created by running the setup_transformer.sh file.
