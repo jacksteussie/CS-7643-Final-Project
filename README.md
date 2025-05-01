@@ -47,3 +47,18 @@ The dataset contains the following classes:
 - 13: soccer ball field
 - 14: swimming pool
 - 15: container crane
+
+## Yolo Instructions
+### all within models/YOLO
+
+1. Compare 3 yolo model sizes: 
+- run yolo_experiments_3models_10epochs.py
+- run plot_3models_10epochs.py to get the results plots.
+2. Train 50 epoch medium model:
+- run yolo_experiments_mModel_50epochs.py
+3. Plot train and validation losses:
+- run plot_train_val_mModel_50epochs.py
+4. Plot mAP validation
+- run plot_map50.py
+5. Predict on test file: 
+- run predict.py
