@@ -47,3 +47,6 @@ The dataset contains the following classes:
 - 13: soccer ball field
 - 14: swimming pool
 - 15: container crane
+
+## RoI Transformer
+The RoI Transformer creates checkpoints at each iteration, to avoid uploading excess data, these chekpoints are omitted here. Please see "RoI_contributions.txt" for details.
