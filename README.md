@@ -48,6 +48,10 @@ The dataset contains the following classes:
 - 14: swimming pool
 - 15: container crane
 
+## Faster RCNN (AABB) Instructions
+
+cd into the `src/` directory and run ```python -m models.FasterRCNN.train``` to train the model. Any parameters can be changed in the config files residing within `src/models/FasterRCNN/configs/`. The model will save the best weights to the `src/checkpoints/` directory.Visualizations of the model results can be found in the jupyter notebook at `src/viz.ipynb`. 
+
 ## Yolo Instructions
 ### all within models/YOLO
 
