@@ -48,9 +48,18 @@ The dataset contains the following classes:
 - 14: swimming pool
 - 15: container crane
 
+## RoI Transformer
+The RoI Transformer creates checkpoints at each iteration, to avoid uploading excess data, these chekpoints are omitted here. Please see "RoI_contributions.txt" for details.
+Additionally, the following files need to be downloaded from the OBBDetection repo for the code to build properly:
+- OBBDetection/mmdet/models
+- OBBDetection/mmdet/ops
+
 ## Faster RCNN (AABB) Instructions
 
-cd into the `src/` directory and run ```python -m models.FasterRCNN.train``` to train the model. Any parameters can be changed in the config files residing within `src/models/FasterRCNN/configs/`. The model will save the best weights to the `src/checkpoints/` directory.Visualizations of the model results can be found in the jupyter notebook at `src/viz.ipynb`. 
+cd into the `src/` directory and run ```python -m models.FasterRCNN.train``` to train the model. 
+Any parameters can be changed in the config files residing within `src/models/FasterRCNN/configs/`. 
+The model will save the best weights to the `src/checkpoints/` directory. 
+Visualizations of the model results can be found in the jupyter notebook at `src/viz.ipynb`. 
 
 ## Yolo Instructions
 ### all within models/YOLO

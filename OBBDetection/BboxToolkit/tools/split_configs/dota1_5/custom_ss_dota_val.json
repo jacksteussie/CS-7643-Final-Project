@@ -1,0 +1,30 @@
+{
+    "nproc": 20,
+    "load_type": "dota",
+    "img_dirs": [
+        "../../../CS-7643-Final-Project/data/dota/images/val"
+    ],
+    "ann_dirs": [
+        "../../../CS-7643-Final-Project/data/dota/labels/val_original"
+    ],
+    "classes": "dota1.5",
+    "prior_annfile": null,
+    "merge_type": "addition",
+    "sizes": [
+        640
+    ],
+    "gaps": [
+        128
+    ],
+    "rates": [
+        1.0
+    ],
+    "img_rate_thr": 0.6,
+    "iof_thr": 0.7,
+    "no_padding": true,
+    "padding_value": [
+    0],
+    "filter_empty": false,
+    "save_dir": "../../../CS-7643-Final-Project/data/OBB_crop_test",
+    "save_ext": ".png"
+}

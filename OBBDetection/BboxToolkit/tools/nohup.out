@@ -1,0 +1,107 @@
+Loading original data!!!
+Starting loading DOTA dataset information.
+  0%|          | 0/1411 [00:00<?, ?it/s]  2%|▏         | 25/1411 [00:00<00:06, 211.03it/s]  6%|▌         | 78/1411 [00:00<00:04, 298.14it/s]  9%|▉         | 126/1411 [00:00<00:04, 297.16it/s] 16%|█▌        | 221/1411 [00:00<00:02, 455.66it/s] 20%|██        | 283/1411 [00:00<00:02, 402.96it/s] 26%|██▌       | 363/1411 [00:00<00:02, 465.14it/s] 29%|██▉       | 412/1411 [00:01<00:03, 294.98it/s] 41%|████      | 582/1411 [00:01<00:01, 538.30it/s] 47%|████▋     | 657/1411 [00:01<00:01, 506.52it/s] 53%|█████▎    | 746/1411 [00:01<00:01, 542.30it/s] 57%|█████▋    | 811/1411 [00:01<00:01, 549.76it/s] 62%|██████▏   | 874/1411 [00:01<00:01, 449.53it/s] 67%|██████▋   | 939/1411 [00:02<00:01, 437.91it/s] 72%|███████▏  | 1018/1411 [00:02<00:00, 500.00it/s] 76%|███████▌  | 1074/1411 [00:02<00:00, 512.87it/s] 80%|████████  | 1130/1411 [00:02<00:00, 491.77it/s] 84%|████████▍ | 1183/1411 [00:02<00:00, 390.03it/s] 87%|████████▋ | 1227/1411 [00:02<00:00, 290.23it/s] 92%|█████████▏| 1292/1411 [00:03<00:00, 332.02it/s] 94%|█████████▍| 1331/1411 [00:03<00:00, 257.94it/s] 98%|█████████▊| 1382/1411 [00:03<00:00, 274.31it/s]100%|██████████| 1411/1411 [00:03<00:00, 399.57it/s]Finishing loading DOTA, get 1411 images, using 3.768s.
+Start splitting images!!!
+
+2025-04-30 14:12:33,488 - (0.1% 1:1411) - Filename: P2080.jpg - width: 410   - height: 811   - Objects: 96    - Windows: 2     - Patches: 2
+2025-04-30 14:12:36,036 - (0.1% 2:1411) - Filename: P0469.jpg - width: 880   - height: 858   - Objects: 7     - Windows: 4     - Patches: 4
+2025-04-30 14:13:02,109 - (0.2% 3:1411) - Filename: P2091.jpg - width: 648   - height: 840   - Objects: 42    - Windows: 4     - Patches: 4
+2025-04-30 14:13:02,620 - (0.3% 4:1411) - Filename: P0727.jpg - width: 1658  - height: 1098  - Objects: 52    - Windows: 6     - Patches: 6
+2025-04-30 14:13:02,737 - (0.4% 5:1411) - Filename: P0282.jpg - width: 1199  - height: 933   - Objects: 33    - Windows: 6     - Patches: 6
+2025-04-30 14:13:02,864 - (0.4% 6:1411) - Filename: P1776.jpg - width: 1339  - height: 1068  - Objects: 46    - Windows: 6     - Patches: 6
+2025-04-30 14:13:02,995 - (0.5% 7:1411) - Filename: P0614.jpg - width: 858   - height: 1365  - Objects: 5     - Windows: 6     - Patches: 6
+2025-04-30 14:13:03,740 - (0.6% 8:1411) - Filename: P2311.jpg - width: 717   - height: 821   - Objects: 27    - Windows: 4     - Patches: 4
+2025-04-30 14:13:04,170 - (0.6% 9:1411) - Filename: P0750.jpg - width: 1960  - height: 817   - Objects: 58    - Windows: 8     - Patches: 8
+2025-04-30 14:14:04,683 - (0.7% 10:1411) - Filename: P0907.jpg - width: 1670  - height: 1591  - Objects: 224   - Windows: 12    - Patches: 12
+2025-04-30 14:14:05,436 - (0.8% 11:1411) - Filename: P1789.jpg - width: 1779  - height: 1418  - Objects: 72    - Windows: 12    - Patches: 12
+2025-04-30 14:15:07,728 - (0.9% 12:1411) - Filename: P2485.jpg - width: 1572  - height: 2384  - Objects: 8     - Windows: 15    - Patches: 15
+2025-04-30 14:15:07,909 - (0.9% 13:1411) - Filename: P0520.jpg - width: 1060  - height: 1894  - Objects: 6     - Windows: 8     - Patches: 8
+2025-04-30 14:15:09,324 - (1.0% 14:1411) - Filename: P2793.jpg - width: 2031  - height: 1750  - Objects: 65    - Windows: 16    - Patches: 16
+2025-04-30 14:15:09,542 - (1.1% 15:1411) - Filename: P2243.jpg - width: 1997  - height: 1669  - Objects: 534   - Windows: 16    - Patches: 16
+2025-04-30 14:15:20,374 - (1.1% 16:1411) - Filename: P1109.jpg - width: 1836  - height: 2380  - Objects: 85    - Windows: 20    - Patches: 20
+2025-04-30 14:15:53,739 - (1.2% 17:1411) - Filename: P0522.jpg - width: 1002  - height: 1861  - Objects: 9     - Windows: 8     - Patches: 8
+2025-04-30 14:15:53,820 - (1.3% 18:1411) - Filename: P0283.jpg - width: 1237  - height: 653   - Objects: 45    - Windows: 6     - Patches: 6
+2025-04-30 14:15:54,293 - (1.3% 19:1411) - Filename: P2566.jpg - width: 1042  - height: 1418  - Objects: 9     - Windows: 6     - Patches: 6
+2025-04-30 14:15:54,763 - (1.4% 20:1411) - Filename: P2421.jpg - width: 2092  - height: 2240  - Objects: 507   - Windows: 20    - Patches: 20
+2025-04-30 14:15:54,870 - (1.5% 21:1411) - Filename: P1823.jpg - width: 2015  - height: 2582  - Objects: 207   - Windows: 20    - Patches: 20
+2025-04-30 14:15:56,029 - (1.6% 22:1411) - Filename: P2397.jpg - width: 1875  - height: 1995  - Objects: 24    - Windows: 16    - Patches: 16
+2025-04-30 14:15:58,526 - (1.6% 23:1411) - Filename: P0978.jpg - width: 1828  - height: 1941  - Objects: 44    - Windows: 16    - Patches: 16
+2025-04-30 14:15:59,902 - (1.7% 24:1411) - Filename: P1420.jpg - width: 2001  - height: 1160  - Objects: 24    - Windows: 12    - Patches: 12
+2025-04-30 14:16:39,128 - (1.8% 25:1411) - Filename: P2466.jpg - width: 1707  - height: 1883  - Objects: 1136  - Windows: 16    - Patches: 16
+2025-04-30 14:16:39,920 - (1.8% 26:1411) - Filename: P2427.jpg - width: 2564  - height: 2611  - Objects: 2252  - Windows: 25    - Patches: 25
+2025-04-30 14:16:41,089 - (1.9% 27:1411) - Filename: P1996.jpg - width: 1608  - height: 1063  - Objects: 41    - Windows: 6     - Patches: 6
+2025-04-30 14:16:47,813 - (2.0% 28:1411) - Filename: P1113.jpg - width: 3072  - height: 1024  - Objects: 5     - Windows: 12    - Patches: 12
+2025-04-30 14:17:22,868 - (2.1% 29:1411) - Filename: P2100.jpg - width: 1592  - height: 1446  - Objects: 48    - Windows: 9     - Patches: 9
+2025-04-30 14:17:23,405 - (2.1% 30:1411) - Filename: P0163.jpg - width: 986   - height: 650   - Objects: 8     - Windows: 4     - Patches: 4
+2025-04-30 14:17:23,757 - (2.2% 31:1411) - Filename: P2706.jpg - width: 1748  - height: 1346  - Objects: 146   - Windows: 12    - Patches: 12
+2025-04-30 14:17:24,808 - (2.3% 32:1411) - Filename: P2368.jpg - width: 2577  - height: 2305  - Objects: 9     - Windows: 25    - Patches: 25
+2025-04-30 14:17:24,944 - (2.3% 33:1411) - Filename: P0294.jpg - width: 1424  - height: 1226  - Objects: 13    - Windows: 9     - Patches: 9
+2025-04-30 14:17:25,087 - (2.4% 34:1411) - Filename: P1062.jpg - width: 3114  - height: 1973  - Objects: 57    - Windows: 24    - Patches: 24
+2025-04-30 14:18:02,844 - (2.5% 35:1411) - Filename: P0986.jpg - width: 1282  - height: 2396  - Objects: 45    - Windows: 15    - Patches: 15
+2025-04-30 14:18:02,901 - (2.6% 36:1411) - Filename: P2270.jpg - width: 486   - height: 805   - Objects: 15    - Windows: 2     - Patches: 2
+2025-04-30 14:18:38,585 - (2.6% 37:1411) - Filename: P0407.jpg - width: 1672  - height: 838   - Objects: 22    - Windows: 8     - Patches: 8
+2025-04-30 14:19:13,885 - (2.7% 38:1411) - Filename: P0884.jpg - width: 1085  - height: 1387  - Objects: 65    - Windows: 6     - Patches: 6
+2025-04-30 14:19:58,697 - (2.8% 39:1411) - Filename: P1703.jpg - width: 4000  - height: 4000  - Objects: 2     - Windows: 64    - Patches: 64
+2025-04-30 14:20:00,651 - (2.8% 40:1411) - Filename: P1585.jpg - width: 4000  - height: 4000  - Objects: 3     - Windows: 64    - Patches: 64
+2025-04-30 14:20:01,041 - (2.9% 41:1411) - Filename: P0314.jpg - width: 1064  - height: 1356  - Objects: 8     - Windows: 6     - Patches: 6
+2025-04-30 14:20:01,111 - (3.0% 42:1411) - Filename: P0914.jpg - width: 1568  - height: 1842  - Objects: 50    - Windows: 12    - Patches: 12
+2025-04-30 14:20:06,965 - (3.0% 43:1411) - Filename: P1812.jpg - width: 1441  - height: 1652  - Objects: 218   - Windows: 9     - Patches: 9
+2025-04-30 14:20:37,786 - (3.1% 44:1411) - Filename: P2770.jpg - width: 3260  - height: 2166  - Objects: 58    - Windows: 28    - Patches: 28
+2025-04-30 14:20:38,467 - (3.2% 45:1411) - Filename: P2264.jpg - width: 2301  - height: 626   - Objects: 7     - Windows: 5     - Patches: 5
+2025-04-30 14:20:39,550 - (3.3% 46:1411) - Filename: P1526.jpg - width: 4000  - height: 4000  - Objects: 3     - Windows: 64    - Patches: 64
+2025-04-30 14:20:40,654 - (3.3% 47:1411) - Filename: P1746.jpg - width: 4000  - height: 4000  - Objects: 71    - Windows: 64    - Patches: 64
+2025-04-30 14:22:39,156 - (3.4% 48:1411) - Filename: P0363.jpg - width: 832   - height: 1141  - Objects: 37    - Windows: 4     - Patches: 4
+2025-04-30 14:22:39,807 - (3.5% 49:1411) - Filename: P2569.jpg - width: 968   - height: 1667  - Objects: 31    - Windows: 8     - Patches: 8
+2025-04-30 14:23:49,469 - (3.5% 50:1411) - Filename: P1582.jpg - width: 4000  - height: 4971  - Objects: 4     - Windows: 80    - Patches: 80
+2025-04-30 14:24:36,876 - (3.6% 51:1411) - Filename: P1449.jpg - width: 2178  - height: 3457  - Objects: 49    - Windows: 35    - Patches: 35
+2025-04-30 14:25:18,974 - (3.7% 52:1411) - Filename: P0116.jpg - width: 601   - height: 957   - Objects: 39    - Windows: 2     - Patches: 2
+2025-04-30 14:27:12,021 - (3.8% 53:1411) - Filename: P1071.jpg - width: 2408  - height: 3496  - Objects: 287   - Windows: 35    - Patches: 35
+2025-04-30 14:28:29,372 - (3.8% 54:1411) - Filename: P0188.jpg - width: 1905  - height: 2112  - Objects: 132   - Windows: 16    - Patches: 16
+2025-04-30 14:28:29,485 - (3.9% 55:1411) - Filename: P1239.jpg - width: 4000  - height: 4000  - Objects: 13    - Windows: 64    - Patches: 64
+2025-04-30 14:30:12,006 - (4.0% 56:1411) - Filename: P1867.jpg - width: 7145  - height: 2349  - Objects: 2526  - Windows: 70    - Patches: 70
+2025-04-30 14:30:48,857 - (4.0% 57:1411) - Filename: P2275.jpg - width: 3077  - height: 2327  - Objects: 16    - Windows: 30    - Patches: 30
+2025-04-30 14:30:50,053 - (4.1% 58:1411) - Filename: P2115.jpg - width: 812   - height: 1364  - Objects: 14    - Windows: 6     - Patches: 6
+2025-04-30 14:30:50,825 - (4.2% 59:1411) - Filename: P0794.jpg - width: 1647  - height: 1405  - Objects: 26    - Windows: 9     - Patches: 9
+2025-04-30 14:31:23,904 - (4.3% 60:1411) - Filename: P1148.jpg - width: 4703  - height: 5368  - Objects: 15    - Windows: 99    - Patches: 99
+2025-04-30 14:31:24,319 - (4.3% 61:1411) - Filename: P1311.jpg - width: 4000  - height: 3620  - Objects: 23    - Windows: 56    - Patches: 56
+2025-04-30 14:33:29,935 - (4.4% 62:1411) - Filename: P0757.jpg - width: 1658  - height: 1098  - Objects: 289   - Windows: 6     - Patches: 6
+2025-04-30 14:33:30,752 - (4.5% 63:1411) - Filename: P0468.jpg - width: 836   - height: 1113  - Objects: 23    - Windows: 4     - Patches: 4
+2025-04-30 14:34:26,405 - (4.5% 64:1411) - Filename: P1114.jpg - width: 5120  - height: 1792  - Objects: 8     - Windows: 40    - Patches: 40
+2025-04-30 14:35:28,022 - (4.6% 65:1411) - Filename: P2020.jpg - width: 680   - height: 793   - Objects: 22    - Windows: 4     - Patches: 4
+2025-04-30 14:36:29,632 - (4.7% 66:1411) - Filename: P0790.jpg - width: 2344  - height: 1637  - Objects: 1000  - Windows: 15    - Patches: 15
+2025-04-30 14:36:45,774 - (4.7% 67:1411) - Filename: P2163.jpg - width: 1485  - height: 1403  - Objects: 72    - Windows: 9     - Patches: 9
+2025-04-30 14:38:23,765 - (4.8% 68:1411) - Filename: P1078.jpg - width: 2024  - height: 2162  - Objects: 36    - Windows: 16    - Patches: 16
+2025-04-30 14:39:25,065 - (4.9% 69:1411) - Filename: P1358.jpg - width: 4000  - height: 4000  - Objects: 108   - Windows: 64    - Patches: 64
+2025-04-30 14:39:25,531 - (5.0% 70:1411) - Filename: P0355.jpg - width: 877   - height: 886   - Objects: 7     - Windows: 4     - Patches: 4
+2025-04-30 14:39:42,692 - (5.0% 71:1411) - Filename: P0832.jpg - width: 869   - height: 1109  - Objects: 18    - Windows: 4     - Patches: 4
+2025-04-30 14:40:30,058 - (5.1% 72:1411) - Filename: P2519.jpg - width: 1889  - height: 2212  - Objects: 3     - Windows: 20    - Patches: 20
+2025-04-30 14:40:36,341 - (5.2% 73:1411) - Filename: P1274.jpg - width: 4000  - height: 4000  - Objects: 68    - Windows: 64    - Patches: 64
+2025-04-30 14:40:47,197 - (5.2% 74:1411) - Filename: P0899.jpg - width: 2151  - height: 1923  - Objects: 344   - Windows: 16    - Patches: 16
+2025-04-30 14:40:52,181 - (5.3% 75:1411) - Filename: P2086.jpg - width: 1082  - height: 1402  - Objects: 18    - Windows: 6     - Patches: 6
+2025-04-30 14:41:40,754 - (5.4% 76:1411) - Filename: P2379.jpg - width: 2085  - height: 2251  - Objects: 3     - Windows: 20    - Patches: 20
+2025-04-30 14:42:06,926 - (5.5% 77:1411) - Filename: P1887.jpg - width: 936   - height: 913   - Objects: 41    - Windows: 4     - Patches: 4
+2025-04-30 14:43:46,005 - (5.5% 78:1411) - Filename: P2716.jpg - width: 4020  - height: 2444  - Objects: 23    - Windows: 40    - Patches: 40
+2025-04-30 14:43:48,567 - (5.6% 79:1411) - Filename: P1166.jpg - width: 3564  - height: 4655  - Objects: 104   - Windows: 63    - Patches: 63
+2025-04-30 14:43:59,277 - (5.7% 80:1411) - Filename: P0308.jpg - width: 1318  - height: 1372  - Objects: 6     - Windows: 9     - Patches: 9
+2025-04-30 14:44:56,345 - (5.7% 81:1411) - Filename: P1047.jpg - width: 941   - height: 831   - Objects: 18    - Windows: 4     - Patches: 4
+2025-04-30 14:44:56,523 - (5.8% 82:1411) - Filename: P1730.jpg - width: 4000  - height: 4000  - Objects: 11    - Windows: 64    - Patches: 64
+2025-04-30 14:45:01,750 - (5.9% 83:1411) - Filename: P1551.jpg - width: 4000  - height: 4000  - Objects: 23    - Windows: 64    - Patches: 64
+2025-04-30 14:45:02,966 - (6.0% 84:1411) - Filename: P0738.jpg - width: 818   - height: 1826  - Objects: 77    - Windows: 8     - Patches: 8
+2025-04-30 14:46:52,206 - (6.0% 85:1411) - Filename: P2728.jpg - width: 2944  - height: 2301  - Objects: 342   - Windows: 30    - Patches: 30
+2025-04-30 14:48:03,550 - (6.1% 86:1411) - Filename: P1487.jpg - width: 1741  - height: 1385  - Objects: 11    - Windows: 12    - Patches: 12
+Traceback (most recent call last):
+  File "img_split.py", line 336, in <module>
+    main()
+  File "img_split.py", line 314, in main
+    patch_infos = pool.map(worker, zip(infos, img_dirs))
+  File "/home/hice1/swalters42/scratch/.conda/envs/openmmlab/lib/python3.8/multiprocessing/pool.py", line 364, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/home/hice1/swalters42/scratch/.conda/envs/openmmlab/lib/python3.8/multiprocessing/pool.py", line 765, in get
+    self.wait(timeout)
+  File "/home/hice1/swalters42/scratch/.conda/envs/openmmlab/lib/python3.8/multiprocessing/pool.py", line 762, in wait
+    self._event.wait(timeout)
+  File "/home/hice1/swalters42/scratch/.conda/envs/openmmlab/lib/python3.8/threading.py", line 558, in wait
+    signaled = self._cond.wait(timeout)
+  File "/home/hice1/swalters42/scratch/.conda/envs/openmmlab/lib/python3.8/threading.py", line 302, in wait
+    waiter.acquire()
+KeyboardInterrupt

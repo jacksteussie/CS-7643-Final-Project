@@ -1,0 +1,18 @@
+The RoI transformer described in the document was created using the OBBDetection repository which can be found here https://github.com/jbwang1997/OBBDetection/tree/master.
+
+I apologize as it may be difficult to see what exactly was created to work with this model.
+
+I created the following files in the OBBDetection directory for the proper execution of the model on the DOTA 1.5 dataset:
+configs/obb/roi_transformer/faster_rcnn_roitrans_r50_fpn_1x_dota15_custom.py
+configs/obb/roi_transformer/faster_rcnn_roitrans_r50_fpn_1x_dota15_custom_dist.py
+configs/obb/_base_/datasets/custom_dota.py
+configs/obb/_base_/schedules/schedule_1x_custom.py
+configs/obb/_base_/schedules/schedule_1x_custom_dist.py
+BboxToolkit/tools/split_configs/dota1_5/custom_ss_dota_train.json
+BboxToolkit/tools/split_configs/dota1_5/custom_ss_dota_val.json
+BboxToolkit/tools/split_configs/dota1_5/custom_ss_dota_train_realtime.json
+
+
+In addition to these files, I made amendments to several files in the repository to address package versioning issues. 
+
+Checkpoint files can be created by running the setup_transformer.sh file.
