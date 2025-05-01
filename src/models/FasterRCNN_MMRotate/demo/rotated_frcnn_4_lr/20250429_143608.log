@@ -1,0 +1,603 @@
+2025-04-29 14:36:08,377 - mmrotate - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.8.10 (default, Jun  4 2021, 15:09:15) [GCC 7.5.0]
+CUDA available: True
+GPU 0,1,2,3: Tesla T4
+CUDA_HOME: /usr/local/cuda
+NVCC: Cuda compilation tools, release 12.1, V12.1.105
+GCC: gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+PyTorch: 1.8.0
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) oneAPI Math Kernel Library Version 2021.4-Product Build 20210904 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v1.7.0 (Git Hash 7aed236906b1f7a05c0917e5257a1af05e9ff683)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 10.2
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 7.6.5
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=10.2, CUDNN_VERSION=7.6.5, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.8.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.9.0
+OpenCV: 4.11.0
+MMCV: 1.7.2
+MMCV Compiler: GCC 7.3
+MMCV CUDA Compiler: 10.2
+MMRotate: 0.3.4+
+------------------------------------------------------------
+
+2025-04-29 14:36:09,261 - mmrotate - INFO - Distributed training: True
+2025-04-29 14:36:10,148 - mmrotate - INFO - Config:
+dataset_type = 'DOTADataset'
+data_root = '/teamspace/studios/this_studio/mmrotate/data/DOTA1_5'
+img_scale = (512, 512)
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(type='RResize', img_scale=(512, 512)),
+    dict(
+        type='RRandomFlip',
+        flip_ratio=[0.25, 0.25, 0.25],
+        direction=['horizontal', 'vertical', 'diagonal'],
+        version='le90'),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size_divisor=32),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(512, 512),
+        flip=False,
+        transforms=[
+            dict(type='RResize'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+data = dict(
+    samples_per_gpu=4,
+    workers_per_gpu=8,
+    train=dict(
+        type='DOTADataset',
+        ann_file=
+        '/teamspace/studios/this_studio/mmrotate/data/DOTA1_5/train/annfiles_corr/',
+        img_prefix=
+        '/teamspace/studios/this_studio/mmrotate/data/DOTA1_5/train/images/',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(type='RResize', img_scale=(512, 512)),
+            dict(
+                type='RRandomFlip',
+                flip_ratio=[0.25, 0.25, 0.25],
+                direction=['horizontal', 'vertical', 'diagonal'],
+                version='le90'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+        ],
+        version='le90',
+        classes=('plane', 'baseball-diamond', 'bridge', 'ground-track-field',
+                 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+                 'basketball-court', 'storage-tank', 'soccer-ball-field',
+                 'roundabout', 'harbor', 'swimming-pool', 'helicopter',
+                 'container-crane')),
+    val=dict(
+        type='DOTADataset',
+        ann_file=
+        '/teamspace/studios/this_studio/mmrotate/data/DOTA1_5/val/annfiles_corr/',
+        img_prefix=
+        '/teamspace/studios/this_studio/mmrotate/data/DOTA1_5/val/images/',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(512, 512),
+                flip=False,
+                transforms=[
+                    dict(type='RResize'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=32),
+                    dict(type='DefaultFormatBundle'),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ],
+        version='le90',
+        classes=('plane', 'baseball-diamond', 'bridge', 'ground-track-field',
+                 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+                 'basketball-court', 'storage-tank', 'soccer-ball-field',
+                 'roundabout', 'harbor', 'swimming-pool', 'helicopter',
+                 'container-crane')),
+    test=dict(
+        type='DOTADataset',
+        ann_file=
+        '/teamspace/studios/this_studio/mmrotate/data/DOTA1_5/val/annfiles_corr/',
+        img_prefix=
+        '/teamspace/studios/this_studio/mmrotate/data/DOTA1_5/val/images/',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(512, 512),
+                flip=False,
+                transforms=[
+                    dict(type='RResize'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=32),
+                    dict(type='DefaultFormatBundle'),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ],
+        version='le90',
+        classes=('plane', 'baseball-diamond', 'bridge', 'ground-track-field',
+                 'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+                 'basketball-court', 'storage-tank', 'soccer-ball-field',
+                 'roundabout', 'harbor', 'swimming-pool', 'helicopter',
+                 'container-crane')))
+evaluation = dict(interval=1, metric='mAP')
+optimizer = dict(type='AdamW', lr=0.001, weight_decay=5e-05)
+optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+lr_config = dict(
+    warmup='linear',
+    warmup_iters=500,
+    warmup_ratio=0.001,
+    policy='CosineAnnealing',
+    min_lr=1e-06)
+runner = dict(type='EpochBasedRunner', max_epochs=30)
+checkpoint_config = dict(interval=1)
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+resume_from = '/teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr/epoch_24 copy.pth'
+workflow = [('train', 1), ('val', 1)]
+opencv_num_threads = 0
+mp_start_method = 'fork'
+angle_version = 'le90'
+model = dict(
+    type='RotatedFasterRCNN',
+    backbone=dict(
+        type='ResNet',
+        depth=50,
+        num_stages=4,
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=1,
+        norm_cfg=dict(type='BN', requires_grad=True),
+        norm_eval=True,
+        style='pytorch',
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
+    neck=dict(
+        type='FPN',
+        in_channels=[256, 512, 1024, 2048],
+        out_channels=256,
+        num_outs=5),
+    rpn_head=dict(
+        type='RotatedRPNHead',
+        in_channels=256,
+        feat_channels=256,
+        version='le90',
+        anchor_generator=dict(
+            type='AnchorGenerator',
+            scales=[8],
+            ratios=[0.5, 1.0, 2.0],
+            strides=[4, 8, 16, 32, 64]),
+        bbox_coder=dict(
+            type='DeltaXYWHBBoxCoder',
+            target_means=[0.0, 0.0, 0.0, 0.0],
+            target_stds=[1.0, 1.0, 1.0, 1.0]),
+        loss_cls=dict(
+            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
+        loss_bbox=dict(
+            type='SmoothL1Loss', beta=0.1111111111111111, loss_weight=1.0)),
+    roi_head=dict(
+        type='RotatedStandardRoIHead',
+        version='le90',
+        bbox_roi_extractor=dict(
+            type='SingleRoIExtractor',
+            roi_layer=dict(type='RoIAlign', output_size=7, sampling_ratio=0),
+            out_channels=256,
+            featmap_strides=[4, 8, 16, 32]),
+        bbox_head=dict(
+            type='RotatedShared2FCBBoxHead',
+            in_channels=256,
+            fc_out_channels=1024,
+            roi_feat_size=7,
+            num_classes=16,
+            bbox_coder=dict(
+                type='DeltaXYWHAHBBoxCoder',
+                angle_range='le90',
+                norm_factor=2,
+                edge_swap=True,
+                target_means=(0.0, 0.0, 0.0, 0.0, 0.0),
+                target_stds=(0.1, 0.1, 0.2, 0.2, 0.1)),
+            reg_class_agnostic=True,
+            loss_cls=dict(
+                type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
+            loss_bbox=dict(type='SmoothL1Loss', beta=1.0, loss_weight=1.0))),
+    train_cfg=dict(
+        rpn=dict(
+            assigner=dict(
+                type='MaxIoUAssigner',
+                pos_iou_thr=0.7,
+                neg_iou_thr=0.3,
+                min_pos_iou=0.3,
+                match_low_quality=True,
+                ignore_iof_thr=-1),
+            sampler=dict(
+                type='RandomSampler',
+                num=256,
+                pos_fraction=0.5,
+                neg_pos_ub=-1,
+                add_gt_as_proposals=False),
+            allowed_border=0,
+            pos_weight=-1,
+            debug=False),
+        rpn_proposal=dict(
+            nms_pre=2000,
+            max_per_img=2000,
+            nms=dict(type='nms', iou_threshold=0.7),
+            min_bbox_size=0),
+        rcnn=dict(
+            assigner=dict(
+                type='MaxIoUAssigner',
+                pos_iou_thr=0.5,
+                neg_iou_thr=0.5,
+                min_pos_iou=0.5,
+                match_low_quality=False,
+                ignore_iof_thr=-1),
+            sampler=dict(
+                type='RandomSampler',
+                num=512,
+                pos_fraction=0.25,
+                neg_pos_ub=-1,
+                add_gt_as_proposals=True),
+            pos_weight=-1,
+            debug=False)),
+    test_cfg=dict(
+        rpn=dict(
+            nms_pre=2000,
+            max_per_img=2000,
+            nms=dict(type='nms', iou_threshold=0.7),
+            min_bbox_size=0),
+        rcnn=dict(
+            nms_pre=2000,
+            min_bbox_size=0,
+            score_thr=0.05,
+            nms=dict(iou_thr=0.1),
+            max_per_img=2000)))
+work_dir = '/teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr'
+classes = ('plane', 'baseball-diamond', 'bridge', 'ground-track-field',
+           'small-vehicle', 'large-vehicle', 'ship', 'tennis-court',
+           'basketball-court', 'storage-tank', 'soccer-ball-field',
+           'roundabout', 'harbor', 'swimming-pool', 'helicopter',
+           'container-crane')
+auto_resume = False
+gpu_ids = range(0, 4)
+
+2025-04-29 14:36:10,148 - mmrotate - INFO - Set random seed to 0, deterministic: False
+2025-04-29 14:36:22,013 - mmrotate - INFO - load checkpoint from local path: /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr/epoch_24 copy.pth
+2025-04-29 14:36:22,390 - mmrotate - INFO - resumed epoch 24, iter 15000
+2025-04-29 14:36:22,391 - mmrotate - INFO - Start running, host: zeus@ip-10-192-12-130, work_dir: /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr
+2025-04-29 14:36:22,392 - mmrotate - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) CosineAnnealingLrUpdaterHook       
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) CosineAnnealingLrUpdaterHook       
+(NORMAL      ) DistSamplerSeedHook                
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) CosineAnnealingLrUpdaterHook       
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(LOW         ) IterTimerHook                      
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(LOW         ) DistEvalHook                       
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) DistSamplerSeedHook                
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+2025-04-29 14:36:22,392 - mmrotate - INFO - workflow: [('train', 1), ('val', 1)], max: 30 epochs
+2025-04-29 14:36:22,392 - mmrotate - INFO - Checkpoints will be saved to /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr by HardDiskBackend.
+2025-04-29 14:36:45,700 - mmrotate - INFO - Epoch [25][50/625]	lr: 9.640e-05, eta: 0:28:43, time: 0.466, data_time: 0.061, memory: 3687, loss_rpn_cls: 0.0152, loss_rpn_bbox: 0.0155, loss_cls: 0.0630, acc: 97.5088, loss_bbox: 0.0927, loss: 0.1863, grad_norm: 1.2588
+2025-04-29 14:37:05,882 - mmrotate - INFO - Epoch [25][100/625]	lr: 9.640e-05, eta: 0:26:26, time: 0.404, data_time: 0.007, memory: 4542, loss_rpn_cls: 0.0133, loss_rpn_bbox: 0.0137, loss_cls: 0.0578, acc: 97.7151, loss_bbox: 0.0854, loss: 0.1702, grad_norm: 1.0942
+2025-04-29 14:37:25,931 - mmrotate - INFO - Epoch [25][150/625]	lr: 9.640e-05, eta: 0:25:24, time: 0.401, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0134, loss_rpn_bbox: 0.0150, loss_cls: 0.0587, acc: 97.6521, loss_bbox: 0.0847, loss: 0.1718, grad_norm: 1.0806
+2025-04-29 14:37:46,048 - mmrotate - INFO - Epoch [25][200/625]	lr: 9.640e-05, eta: 0:24:44, time: 0.402, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0137, loss_rpn_bbox: 0.0134, loss_cls: 0.0574, acc: 97.6997, loss_bbox: 0.0831, loss: 0.1676, grad_norm: 1.0847
+2025-04-29 14:38:06,089 - mmrotate - INFO - Epoch [25][250/625]	lr: 9.640e-05, eta: 0:24:11, time: 0.401, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0127, loss_rpn_bbox: 0.0130, loss_cls: 0.0553, acc: 97.8403, loss_bbox: 0.0811, loss: 0.1622, grad_norm: 1.0249
+2025-04-29 14:38:26,166 - mmrotate - INFO - Epoch [25][300/625]	lr: 9.640e-05, eta: 0:23:43, time: 0.401, data_time: 0.007, memory: 6435, loss_rpn_cls: 0.0122, loss_rpn_bbox: 0.0137, loss_cls: 0.0537, acc: 97.8496, loss_bbox: 0.0769, loss: 0.1565, grad_norm: 1.0552
+2025-04-29 14:38:46,245 - mmrotate - INFO - Epoch [25][350/625]	lr: 9.640e-05, eta: 0:23:17, time: 0.402, data_time: 0.007, memory: 6435, loss_rpn_cls: 0.0131, loss_rpn_bbox: 0.0141, loss_cls: 0.0563, acc: 97.7749, loss_bbox: 0.0796, loss: 0.1631, grad_norm: 1.1006
+2025-04-29 14:39:06,474 - mmrotate - INFO - Epoch [25][400/625]	lr: 9.640e-05, eta: 0:22:54, time: 0.405, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0131, loss_rpn_bbox: 0.0131, loss_cls: 0.0543, acc: 97.8628, loss_bbox: 0.0749, loss: 0.1555, grad_norm: 0.9563
+2025-04-29 14:39:26,719 - mmrotate - INFO - Epoch [25][450/625]	lr: 9.640e-05, eta: 0:22:31, time: 0.405, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0113, loss_rpn_bbox: 0.0130, loss_cls: 0.0509, acc: 97.9766, loss_bbox: 0.0761, loss: 0.1513, grad_norm: 1.0099
+2025-04-29 14:39:46,895 - mmrotate - INFO - Epoch [25][500/625]	lr: 9.640e-05, eta: 0:22:09, time: 0.404, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0133, loss_rpn_bbox: 0.0145, loss_cls: 0.0567, acc: 97.7563, loss_bbox: 0.0845, loss: 0.1689, grad_norm: 1.0492
+2025-04-29 14:40:07,306 - mmrotate - INFO - Epoch [25][550/625]	lr: 9.640e-05, eta: 0:21:48, time: 0.408, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0132, loss_rpn_bbox: 0.0143, loss_cls: 0.0532, acc: 97.8667, loss_bbox: 0.0825, loss: 0.1632, grad_norm: 1.0550
+2025-04-29 14:40:27,654 - mmrotate - INFO - Epoch [25][600/625]	lr: 9.640e-05, eta: 0:21:27, time: 0.407, data_time: 0.006, memory: 6435, loss_rpn_cls: 0.0140, loss_rpn_bbox: 0.0150, loss_cls: 0.0555, acc: 97.8489, loss_bbox: 0.0876, loss: 0.1721, grad_norm: 1.0776
+2025-04-29 14:40:37,816 - mmrotate - INFO - Saving checkpoint at 25 epochs
+2025-04-29 14:42:21,068 - mmrotate - INFO - 
++--------------------+--------+-------+--------+-------+
+| class              | gts    | dets  | recall | ap    |
++--------------------+--------+-------+--------+-------+
+| plane              | 8669   | 9073  | 0.841  | 0.811 |
+| baseball-diamond   | 639    | 1213  | 0.789  | 0.650 |
+| bridge             | 1436   | 2770  | 0.381  | 0.262 |
+| ground-track-field | 375    | 1156  | 0.744  | 0.598 |
+| small-vehicle      | 137235 | 25966 | 0.093  | 0.091 |
+| large-vehicle      | 13958  | 21764 | 0.687  | 0.570 |
+| ship               | 36368  | 31326 | 0.605  | 0.601 |
+| tennis-court       | 1847   | 2393  | 0.868  | 0.816 |
+| basketball-court   | 431    | 858   | 0.541  | 0.457 |
+| storage-tank       | 10129  | 4803  | 0.352  | 0.356 |
+| soccer-ball-field  | 426    | 1001  | 0.594  | 0.470 |
+| roundabout         | 556    | 1114  | 0.552  | 0.448 |
+| harbor             | 6107   | 10883 | 0.757  | 0.635 |
+| swimming-pool      | 1609   | 2825  | 0.630  | 0.571 |
+| helicopter         | 284    | 825   | 0.525  | 0.362 |
+| container-crane    | 71     | 323   | 0.000  | 0.000 |
++--------------------+--------+-------+--------+-------+
+| mAP                |        |       |        | 0.481 |
++--------------------+--------+-------+--------+-------+
+2025-04-29 14:42:21,095 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 14:42:21,095 - mmrotate - INFO - Epoch(val) [25][1536]	mAP: 0.4811
+2025-04-29 14:43:33,131 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 14:43:33,131 - mmrotate - INFO - Epoch(val) [25][384]	loss_rpn_cls_val: 0.0749, loss_rpn_bbox_val: 0.0181, loss_cls_val: 0.0969, acc_val: 96.9804, loss_bbox_val: 0.0993, loss_val: 0.2893
+2025-04-29 14:43:56,047 - mmrotate - INFO - Epoch [26][50/625]	lr: 6.792e-05, eta: 0:20:21, time: 0.458, data_time: 0.059, memory: 7197, loss_rpn_cls: 0.0133, loss_rpn_bbox: 0.0139, loss_cls: 0.0524, acc: 97.9287, loss_bbox: 0.0743, loss: 0.1540, grad_norm: 0.9782
+2025-04-29 14:44:16,088 - mmrotate - INFO - Epoch [26][100/625]	lr: 6.792e-05, eta: 0:20:02, time: 0.401, data_time: 0.006, memory: 7197, loss_rpn_cls: 0.0117, loss_rpn_bbox: 0.0132, loss_cls: 0.0521, acc: 97.9514, loss_bbox: 0.0768, loss: 0.1539, grad_norm: 0.9621
+2025-04-29 14:44:36,268 - mmrotate - INFO - Epoch [26][150/625]	lr: 6.792e-05, eta: 0:19:43, time: 0.404, data_time: 0.006, memory: 7197, loss_rpn_cls: 0.0101, loss_rpn_bbox: 0.0126, loss_cls: 0.0520, acc: 97.9321, loss_bbox: 0.0764, loss: 0.1510, grad_norm: 0.9730
+2025-04-29 14:44:56,459 - mmrotate - INFO - Epoch [26][200/625]	lr: 6.792e-05, eta: 0:19:24, time: 0.404, data_time: 0.006, memory: 7197, loss_rpn_cls: 0.0134, loss_rpn_bbox: 0.0145, loss_cls: 0.0525, acc: 97.8967, loss_bbox: 0.0779, loss: 0.1583, grad_norm: 0.9804
+2025-04-29 14:45:16,698 - mmrotate - INFO - Epoch [26][250/625]	lr: 6.792e-05, eta: 0:19:06, time: 0.405, data_time: 0.006, memory: 7197, loss_rpn_cls: 0.0112, loss_rpn_bbox: 0.0126, loss_cls: 0.0511, acc: 97.9802, loss_bbox: 0.0764, loss: 0.1513, grad_norm: 0.9819
+2025-04-29 14:45:36,742 - mmrotate - INFO - Epoch [26][300/625]	lr: 6.792e-05, eta: 0:18:46, time: 0.401, data_time: 0.006, memory: 7197, loss_rpn_cls: 0.0111, loss_rpn_bbox: 0.0133, loss_cls: 0.0515, acc: 97.9268, loss_bbox: 0.0800, loss: 0.1559, grad_norm: 1.0046
+2025-04-29 14:45:56,958 - mmrotate - INFO - Epoch [26][350/625]	lr: 6.792e-05, eta: 0:18:27, time: 0.404, data_time: 0.006, memory: 7197, loss_rpn_cls: 0.0125, loss_rpn_bbox: 0.0135, loss_cls: 0.0518, acc: 97.9209, loss_bbox: 0.0795, loss: 0.1573, grad_norm: 1.0371
+2025-04-29 14:46:17,215 - mmrotate - INFO - Epoch [26][400/625]	lr: 6.792e-05, eta: 0:18:08, time: 0.405, data_time: 0.007, memory: 7197, loss_rpn_cls: 0.0111, loss_rpn_bbox: 0.0127, loss_cls: 0.0476, acc: 98.1060, loss_bbox: 0.0709, loss: 0.1423, grad_norm: 0.9705
+2025-04-29 14:46:37,576 - mmrotate - INFO - Epoch [26][450/625]	lr: 6.792e-05, eta: 0:17:49, time: 0.407, data_time: 0.007, memory: 7197, loss_rpn_cls: 0.0120, loss_rpn_bbox: 0.0141, loss_cls: 0.0527, acc: 97.9246, loss_bbox: 0.0769, loss: 0.1557, grad_norm: 1.0587
+2025-04-29 14:46:57,681 - mmrotate - INFO - Epoch [26][500/625]	lr: 6.792e-05, eta: 0:17:29, time: 0.402, data_time: 0.007, memory: 7197, loss_rpn_cls: 0.0117, loss_rpn_bbox: 0.0128, loss_cls: 0.0504, acc: 97.9851, loss_bbox: 0.0751, loss: 0.1500, grad_norm: 0.9811
+2025-04-29 14:47:18,017 - mmrotate - INFO - Epoch [26][550/625]	lr: 6.792e-05, eta: 0:17:10, time: 0.407, data_time: 0.007, memory: 7197, loss_rpn_cls: 0.0102, loss_rpn_bbox: 0.0124, loss_cls: 0.0505, acc: 97.9612, loss_bbox: 0.0727, loss: 0.1458, grad_norm: 0.9930
+2025-04-29 14:47:38,226 - mmrotate - INFO - Epoch [26][600/625]	lr: 6.792e-05, eta: 0:16:50, time: 0.404, data_time: 0.007, memory: 7197, loss_rpn_cls: 0.0113, loss_rpn_bbox: 0.0131, loss_cls: 0.0492, acc: 98.0122, loss_bbox: 0.0751, loss: 0.1487, grad_norm: 0.9852
+2025-04-29 14:47:48,314 - mmrotate - INFO - Saving checkpoint at 26 epochs
+2025-04-29 14:49:27,528 - mmrotate - INFO - 
++--------------------+--------+-------+--------+-------+
+| class              | gts    | dets  | recall | ap    |
++--------------------+--------+-------+--------+-------+
+| plane              | 8669   | 9067  | 0.845  | 0.812 |
+| baseball-diamond   | 639    | 1056  | 0.793  | 0.658 |
+| bridge             | 1436   | 2661  | 0.396  | 0.265 |
+| ground-track-field | 375    | 1107  | 0.749  | 0.601 |
+| small-vehicle      | 137235 | 26765 | 0.097  | 0.091 |
+| large-vehicle      | 13958  | 21261 | 0.683  | 0.560 |
+| ship               | 36368  | 32223 | 0.610  | 0.605 |
+| tennis-court       | 1847   | 2390  | 0.870  | 0.817 |
+| basketball-court   | 431    | 778   | 0.538  | 0.464 |
+| storage-tank       | 10129  | 5135  | 0.367  | 0.357 |
+| soccer-ball-field  | 426    | 929   | 0.580  | 0.463 |
+| roundabout         | 556    | 1271  | 0.592  | 0.465 |
+| harbor             | 6107   | 10190 | 0.765  | 0.633 |
+| swimming-pool      | 1609   | 2433  | 0.621  | 0.561 |
+| helicopter         | 284    | 864   | 0.553  | 0.377 |
+| container-crane    | 71     | 449   | 0.014  | 0.091 |
++--------------------+--------+-------+--------+-------+
+| mAP                |        |       |        | 0.489 |
++--------------------+--------+-------+--------+-------+
+2025-04-29 14:49:27,559 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 14:49:27,559 - mmrotate - INFO - Epoch(val) [26][1536]	mAP: 0.4886
+2025-04-29 14:50:39,707 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 14:50:39,708 - mmrotate - INFO - Epoch(val) [26][384]	loss_rpn_cls_val: 0.0745, loss_rpn_bbox_val: 0.0177, loss_cls_val: 0.0980, acc_val: 96.9943, loss_bbox_val: 0.1003, loss_val: 0.2905
+2025-04-29 14:51:02,487 - mmrotate - INFO - Epoch [27][50/625]	lr: 4.418e-05, eta: 0:16:06, time: 0.455, data_time: 0.058, memory: 7206, loss_rpn_cls: 0.0110, loss_rpn_bbox: 0.0123, loss_cls: 0.0489, acc: 98.0232, loss_bbox: 0.0700, loss: 0.1422, grad_norm: 0.9260
+2025-04-29 14:51:22,581 - mmrotate - INFO - Epoch [27][100/625]	lr: 4.418e-05, eta: 0:15:47, time: 0.402, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0112, loss_rpn_bbox: 0.0126, loss_cls: 0.0478, acc: 98.1104, loss_bbox: 0.0689, loss: 0.1405, grad_norm: 0.9717
+2025-04-29 14:51:42,732 - mmrotate - INFO - Epoch [27][150/625]	lr: 4.418e-05, eta: 0:15:28, time: 0.403, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0114, loss_rpn_bbox: 0.0128, loss_cls: 0.0513, acc: 97.9614, loss_bbox: 0.0769, loss: 0.1524, grad_norm: 0.9840
+2025-04-29 14:52:03,069 - mmrotate - INFO - Epoch [27][200/625]	lr: 4.418e-05, eta: 0:15:09, time: 0.407, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0113, loss_rpn_bbox: 0.0127, loss_cls: 0.0494, acc: 98.0500, loss_bbox: 0.0749, loss: 0.1483, grad_norm: 0.9909
+2025-04-29 14:52:23,123 - mmrotate - INFO - Epoch [27][250/625]	lr: 4.418e-05, eta: 0:14:50, time: 0.401, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0121, loss_rpn_bbox: 0.0129, loss_cls: 0.0505, acc: 97.9812, loss_bbox: 0.0748, loss: 0.1502, grad_norm: 0.9923
+2025-04-29 14:52:43,439 - mmrotate - INFO - Epoch [27][300/625]	lr: 4.418e-05, eta: 0:14:31, time: 0.406, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0116, loss_rpn_bbox: 0.0137, loss_cls: 0.0496, acc: 98.0227, loss_bbox: 0.0768, loss: 0.1517, grad_norm: 0.9840
+2025-04-29 14:53:03,993 - mmrotate - INFO - Epoch [27][350/625]	lr: 4.418e-05, eta: 0:14:12, time: 0.411, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0110, loss_rpn_bbox: 0.0136, loss_cls: 0.0495, acc: 98.0251, loss_bbox: 0.0747, loss: 0.1487, grad_norm: 0.9970
+2025-04-29 14:53:24,203 - mmrotate - INFO - Epoch [27][400/625]	lr: 4.418e-05, eta: 0:13:53, time: 0.404, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0110, loss_rpn_bbox: 0.0130, loss_cls: 0.0477, acc: 98.0601, loss_bbox: 0.0709, loss: 0.1427, grad_norm: 0.9688
+2025-04-29 14:53:44,425 - mmrotate - INFO - Epoch [27][450/625]	lr: 4.418e-05, eta: 0:13:33, time: 0.404, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0112, loss_rpn_bbox: 0.0137, loss_cls: 0.0495, acc: 98.0349, loss_bbox: 0.0731, loss: 0.1475, grad_norm: 0.9635
+2025-04-29 14:54:04,731 - mmrotate - INFO - Epoch [27][500/625]	lr: 4.418e-05, eta: 0:13:14, time: 0.406, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0098, loss_rpn_bbox: 0.0121, loss_cls: 0.0456, acc: 98.1638, loss_bbox: 0.0711, loss: 0.1386, grad_norm: 0.9479
+2025-04-29 14:54:24,712 - mmrotate - INFO - Epoch [27][550/625]	lr: 4.418e-05, eta: 0:12:54, time: 0.400, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0099, loss_rpn_bbox: 0.0122, loss_cls: 0.0479, acc: 98.0869, loss_bbox: 0.0717, loss: 0.1418, grad_norm: 0.9834
+2025-04-29 14:54:44,950 - mmrotate - INFO - Epoch [27][600/625]	lr: 4.418e-05, eta: 0:12:35, time: 0.405, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0119, loss_rpn_bbox: 0.0134, loss_cls: 0.0500, acc: 98.0002, loss_bbox: 0.0775, loss: 0.1527, grad_norm: 0.9658
+2025-04-29 14:54:55,115 - mmrotate - INFO - Saving checkpoint at 27 epochs
+2025-04-29 14:56:34,124 - mmrotate - INFO - 
++--------------------+--------+-------+--------+-------+
+| class              | gts    | dets  | recall | ap    |
++--------------------+--------+-------+--------+-------+
+| plane              | 8669   | 9091  | 0.844  | 0.811 |
+| baseball-diamond   | 639    | 1032  | 0.797  | 0.661 |
+| bridge             | 1436   | 2137  | 0.380  | 0.265 |
+| ground-track-field | 375    | 984   | 0.731  | 0.600 |
+| small-vehicle      | 137235 | 25747 | 0.095  | 0.091 |
+| large-vehicle      | 13958  | 19728 | 0.682  | 0.565 |
+| ship               | 36368  | 30600 | 0.602  | 0.601 |
+| tennis-court       | 1847   | 2215  | 0.870  | 0.817 |
+| basketball-court   | 431    | 827   | 0.541  | 0.464 |
+| storage-tank       | 10129  | 5126  | 0.370  | 0.357 |
+| soccer-ball-field  | 426    | 845   | 0.589  | 0.460 |
+| roundabout         | 556    | 1104  | 0.581  | 0.469 |
+| harbor             | 6107   | 9807  | 0.766  | 0.641 |
+| swimming-pool      | 1609   | 2315  | 0.621  | 0.568 |
+| helicopter         | 284    | 800   | 0.549  | 0.390 |
+| container-crane    | 71     | 328   | 0.000  | 0.000 |
++--------------------+--------+-------+--------+-------+
+| mAP                |        |       |        | 0.485 |
++--------------------+--------+-------+--------+-------+
+2025-04-29 14:56:34,155 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 14:56:34,155 - mmrotate - INFO - Epoch(val) [27][1536]	mAP: 0.4850
+2025-04-29 14:57:46,433 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 14:57:46,433 - mmrotate - INFO - Epoch(val) [27][384]	loss_rpn_cls_val: 0.0800, loss_rpn_bbox_val: 0.0176, loss_cls_val: 0.0973, acc_val: 97.0708, loss_bbox_val: 0.0987, loss_val: 0.2936
+2025-04-29 14:58:09,215 - mmrotate - INFO - Epoch [28][50/625]	lr: 2.545e-05, eta: 0:11:58, time: 0.455, data_time: 0.060, memory: 7206, loss_rpn_cls: 0.0102, loss_rpn_bbox: 0.0123, loss_cls: 0.0476, acc: 98.1128, loss_bbox: 0.0704, loss: 0.1404, grad_norm: 0.9566
+2025-04-29 14:58:29,409 - mmrotate - INFO - Epoch [28][100/625]	lr: 2.545e-05, eta: 0:11:39, time: 0.404, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0111, loss_rpn_bbox: 0.0130, loss_cls: 0.0470, acc: 98.1101, loss_bbox: 0.0715, loss: 0.1427, grad_norm: 0.9569
+2025-04-29 14:58:49,466 - mmrotate - INFO - Epoch [28][150/625]	lr: 2.545e-05, eta: 0:11:20, time: 0.401, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0106, loss_rpn_bbox: 0.0126, loss_cls: 0.0493, acc: 98.0391, loss_bbox: 0.0722, loss: 0.1447, grad_norm: 0.9783
+2025-04-29 14:59:09,561 - mmrotate - INFO - Epoch [28][200/625]	lr: 2.545e-05, eta: 0:11:00, time: 0.402, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0113, loss_rpn_bbox: 0.0122, loss_cls: 0.0465, acc: 98.1282, loss_bbox: 0.0676, loss: 0.1375, grad_norm: 0.9513
+2025-04-29 14:59:29,955 - mmrotate - INFO - Epoch [28][250/625]	lr: 2.545e-05, eta: 0:10:41, time: 0.408, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0105, loss_rpn_bbox: 0.0123, loss_cls: 0.0458, acc: 98.1711, loss_bbox: 0.0731, loss: 0.1416, grad_norm: 0.9568
+2025-04-29 14:59:50,293 - mmrotate - INFO - Epoch [28][300/625]	lr: 2.545e-05, eta: 0:10:22, time: 0.407, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0109, loss_rpn_bbox: 0.0128, loss_cls: 0.0491, acc: 98.0410, loss_bbox: 0.0694, loss: 0.1422, grad_norm: 0.9784
+2025-04-29 15:00:10,436 - mmrotate - INFO - Epoch [28][350/625]	lr: 2.545e-05, eta: 0:10:02, time: 0.403, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0104, loss_rpn_bbox: 0.0129, loss_cls: 0.0478, acc: 98.0889, loss_bbox: 0.0764, loss: 0.1475, grad_norm: 0.9582
+2025-04-29 15:00:30,853 - mmrotate - INFO - Epoch [28][400/625]	lr: 2.545e-05, eta: 0:09:43, time: 0.408, data_time: 0.006, memory: 7206, loss_rpn_cls: 0.0120, loss_rpn_bbox: 0.0143, loss_cls: 0.0508, acc: 97.9753, loss_bbox: 0.0755, loss: 0.1527, grad_norm: 0.9592
+2025-04-29 15:00:51,494 - mmrotate - INFO - Epoch [28][450/625]	lr: 2.545e-05, eta: 0:09:24, time: 0.413, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0108, loss_rpn_bbox: 0.0128, loss_cls: 0.0487, acc: 98.0557, loss_bbox: 0.0734, loss: 0.1456, grad_norm: 0.9352
+2025-04-29 15:01:12,102 - mmrotate - INFO - Epoch [28][500/625]	lr: 2.545e-05, eta: 0:09:04, time: 0.412, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0105, loss_rpn_bbox: 0.0117, loss_cls: 0.0448, acc: 98.2263, loss_bbox: 0.0667, loss: 0.1337, grad_norm: 0.9122
+2025-04-29 15:01:32,427 - mmrotate - INFO - Epoch [28][550/625]	lr: 2.545e-05, eta: 0:08:45, time: 0.407, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0105, loss_rpn_bbox: 0.0128, loss_cls: 0.0463, acc: 98.1467, loss_bbox: 0.0709, loss: 0.1405, grad_norm: 0.9250
+2025-04-29 15:01:52,936 - mmrotate - INFO - Epoch [28][600/625]	lr: 2.545e-05, eta: 0:08:25, time: 0.410, data_time: 0.007, memory: 7206, loss_rpn_cls: 0.0107, loss_rpn_bbox: 0.0135, loss_cls: 0.0480, acc: 98.0837, loss_bbox: 0.0756, loss: 0.1480, grad_norm: 0.9646
+2025-04-29 15:02:03,151 - mmrotate - INFO - Saving checkpoint at 28 epochs
+2025-04-29 15:03:44,149 - mmrotate - INFO - 
++--------------------+--------+-------+--------+-------+
+| class              | gts    | dets  | recall | ap    |
++--------------------+--------+-------+--------+-------+
+| plane              | 8669   | 9054  | 0.845  | 0.811 |
+| baseball-diamond   | 639    | 1050  | 0.790  | 0.663 |
+| bridge             | 1436   | 2192  | 0.382  | 0.263 |
+| ground-track-field | 375    | 914   | 0.707  | 0.586 |
+| small-vehicle      | 137235 | 26607 | 0.096  | 0.091 |
+| large-vehicle      | 13958  | 20342 | 0.685  | 0.563 |
+| ship               | 36368  | 30892 | 0.610  | 0.607 |
+| tennis-court       | 1847   | 2234  | 0.869  | 0.817 |
+| basketball-court   | 431    | 856   | 0.555  | 0.469 |
+| storage-tank       | 10129  | 5007  | 0.363  | 0.357 |
+| soccer-ball-field  | 426    | 768   | 0.568  | 0.462 |
+| roundabout         | 556    | 1155  | 0.585  | 0.473 |
+| harbor             | 6107   | 9798  | 0.767  | 0.641 |
+| swimming-pool      | 1609   | 2362  | 0.618  | 0.567 |
+| helicopter         | 284    | 808   | 0.518  | 0.383 |
+| container-crane    | 71     | 349   | 0.000  | 0.000 |
++--------------------+--------+-------+--------+-------+
+| mAP                |        |       |        | 0.485 |
++--------------------+--------+-------+--------+-------+
+2025-04-29 15:03:44,178 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 15:03:44,178 - mmrotate - INFO - Epoch(val) [28][1536]	mAP: 0.4846
+2025-04-29 15:04:57,927 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 15:04:57,927 - mmrotate - INFO - Epoch(val) [28][384]	loss_rpn_cls_val: 0.0812, loss_rpn_bbox_val: 0.0177, loss_cls_val: 0.0976, acc_val: 97.0657, loss_bbox_val: 0.0977, loss_val: 0.2943
+2025-04-29 15:05:21,039 - mmrotate - INFO - Epoch [29][50/625]	lr: 1.192e-05, eta: 0:07:53, time: 0.462, data_time: 0.062, memory: 7208, loss_rpn_cls: 0.0103, loss_rpn_bbox: 0.0125, loss_cls: 0.0463, acc: 98.1570, loss_bbox: 0.0692, loss: 0.1383, grad_norm: 0.9424
+2025-04-29 15:05:41,428 - mmrotate - INFO - Epoch [29][100/625]	lr: 1.192e-05, eta: 0:07:33, time: 0.408, data_time: 0.008, memory: 7208, loss_rpn_cls: 0.0092, loss_rpn_bbox: 0.0111, loss_cls: 0.0443, acc: 98.2390, loss_bbox: 0.0654, loss: 0.1301, grad_norm: 0.8907
+2025-04-29 15:06:01,871 - mmrotate - INFO - Epoch [29][150/625]	lr: 1.192e-05, eta: 0:07:14, time: 0.409, data_time: 0.008, memory: 7208, loss_rpn_cls: 0.0108, loss_rpn_bbox: 0.0127, loss_cls: 0.0482, acc: 98.0767, loss_bbox: 0.0761, loss: 0.1477, grad_norm: 0.9439
+2025-04-29 15:06:22,209 - mmrotate - INFO - Epoch [29][200/625]	lr: 1.192e-05, eta: 0:06:54, time: 0.407, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0098, loss_rpn_bbox: 0.0126, loss_cls: 0.0471, acc: 98.1340, loss_bbox: 0.0689, loss: 0.1384, grad_norm: 0.9049
+2025-04-29 15:06:42,803 - mmrotate - INFO - Epoch [29][250/625]	lr: 1.192e-05, eta: 0:06:35, time: 0.412, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0109, loss_rpn_bbox: 0.0132, loss_cls: 0.0488, acc: 98.0562, loss_bbox: 0.0747, loss: 0.1476, grad_norm: 0.9780
+2025-04-29 15:07:03,059 - mmrotate - INFO - Epoch [29][300/625]	lr: 1.192e-05, eta: 0:06:15, time: 0.405, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0107, loss_rpn_bbox: 0.0133, loss_cls: 0.0483, acc: 98.0750, loss_bbox: 0.0686, loss: 0.1408, grad_norm: 0.9324
+2025-04-29 15:07:23,639 - mmrotate - INFO - Epoch [29][350/625]	lr: 1.192e-05, eta: 0:05:56, time: 0.412, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0115, loss_rpn_bbox: 0.0120, loss_cls: 0.0451, acc: 98.1909, loss_bbox: 0.0710, loss: 0.1396, grad_norm: 0.9309
+2025-04-29 15:07:44,149 - mmrotate - INFO - Epoch [29][400/625]	lr: 1.192e-05, eta: 0:05:36, time: 0.410, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0103, loss_rpn_bbox: 0.0125, loss_cls: 0.0500, acc: 97.9883, loss_bbox: 0.0706, loss: 0.1433, grad_norm: 0.9230
+2025-04-29 15:08:04,527 - mmrotate - INFO - Epoch [29][450/625]	lr: 1.192e-05, eta: 0:05:16, time: 0.408, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0112, loss_rpn_bbox: 0.0121, loss_cls: 0.0449, acc: 98.2068, loss_bbox: 0.0714, loss: 0.1396, grad_norm: 0.9123
+2025-04-29 15:08:25,035 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 15:08:25,036 - mmrotate - INFO - Epoch [29][500/625]	lr: 1.192e-05, eta: 0:04:57, time: 0.410, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0104, loss_rpn_bbox: 0.0129, loss_cls: 0.0485, acc: 98.0225, loss_bbox: 0.0714, loss: 0.1432, grad_norm: 0.9856
+2025-04-29 15:08:45,523 - mmrotate - INFO - Epoch [29][550/625]	lr: 1.192e-05, eta: 0:04:37, time: 0.410, data_time: 0.008, memory: 7208, loss_rpn_cls: 0.0104, loss_rpn_bbox: 0.0119, loss_cls: 0.0463, acc: 98.1636, loss_bbox: 0.0706, loss: 0.1393, grad_norm: 0.9200
+2025-04-29 15:09:06,126 - mmrotate - INFO - Epoch [29][600/625]	lr: 1.192e-05, eta: 0:04:17, time: 0.412, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0095, loss_rpn_bbox: 0.0124, loss_cls: 0.0454, acc: 98.1931, loss_bbox: 0.0727, loss: 0.1401, grad_norm: 0.9377
+2025-04-29 15:09:16,391 - mmrotate - INFO - Saving checkpoint at 29 epochs
+2025-04-29 15:10:56,967 - mmrotate - INFO - 
++--------------------+--------+-------+--------+-------+
+| class              | gts    | dets  | recall | ap    |
++--------------------+--------+-------+--------+-------+
+| plane              | 8669   | 8902  | 0.842  | 0.811 |
+| baseball-diamond   | 639    | 1033  | 0.779  | 0.659 |
+| bridge             | 1436   | 2207  | 0.380  | 0.265 |
+| ground-track-field | 375    | 862   | 0.707  | 0.588 |
+| small-vehicle      | 137235 | 25634 | 0.095  | 0.091 |
+| large-vehicle      | 13958  | 20274 | 0.680  | 0.560 |
+| ship               | 36368  | 30650 | 0.606  | 0.605 |
+| tennis-court       | 1847   | 2219  | 0.867  | 0.817 |
+| basketball-court   | 431    | 793   | 0.538  | 0.469 |
+| storage-tank       | 10129  | 4799  | 0.358  | 0.357 |
+| soccer-ball-field  | 426    | 818   | 0.568  | 0.458 |
+| roundabout         | 556    | 1137  | 0.574  | 0.471 |
+| harbor             | 6107   | 9806  | 0.766  | 0.639 |
+| swimming-pool      | 1609   | 2253  | 0.618  | 0.563 |
+| helicopter         | 284    | 803   | 0.535  | 0.397 |
+| container-crane    | 71     | 334   | 0.000  | 0.000 |
++--------------------+--------+-------+--------+-------+
+| mAP                |        |       |        | 0.485 |
++--------------------+--------+-------+--------+-------+
+2025-04-29 15:10:57,000 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 15:10:57,001 - mmrotate - INFO - Epoch(val) [29][1536]	mAP: 0.4845
+2025-04-29 15:12:10,430 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 15:12:10,431 - mmrotate - INFO - Epoch(val) [29][384]	loss_rpn_cls_val: 0.0831, loss_rpn_bbox_val: 0.0175, loss_cls_val: 0.0977, acc_val: 97.0922, loss_bbox_val: 0.0982, loss_val: 0.2965
+2025-04-29 15:12:33,462 - mmrotate - INFO - Epoch [30][50/625]	lr: 3.736e-06, eta: 0:03:46, time: 0.460, data_time: 0.061, memory: 7208, loss_rpn_cls: 0.0101, loss_rpn_bbox: 0.0122, loss_cls: 0.0470, acc: 98.1448, loss_bbox: 0.0694, loss: 0.1386, grad_norm: 0.9398
+2025-04-29 15:12:53,918 - mmrotate - INFO - Epoch [30][100/625]	lr: 3.736e-06, eta: 0:03:27, time: 0.409, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0107, loss_rpn_bbox: 0.0126, loss_cls: 0.0477, acc: 98.1113, loss_bbox: 0.0733, loss: 0.1444, grad_norm: 0.9284
+2025-04-29 15:13:14,243 - mmrotate - INFO - Epoch [30][150/625]	lr: 3.736e-06, eta: 0:03:07, time: 0.406, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0103, loss_rpn_bbox: 0.0121, loss_cls: 0.0451, acc: 98.2004, loss_bbox: 0.0651, loss: 0.1326, grad_norm: 0.8907
+2025-04-29 15:13:34,627 - mmrotate - INFO - Epoch [30][200/625]	lr: 3.736e-06, eta: 0:02:48, time: 0.408, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0100, loss_rpn_bbox: 0.0107, loss_cls: 0.0429, acc: 98.2878, loss_bbox: 0.0662, loss: 0.1298, grad_norm: 0.9174
+2025-04-29 15:13:55,190 - mmrotate - INFO - Epoch [30][250/625]	lr: 3.736e-06, eta: 0:02:28, time: 0.411, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0101, loss_rpn_bbox: 0.0129, loss_cls: 0.0472, acc: 98.1169, loss_bbox: 0.0748, loss: 0.1450, grad_norm: 0.9419
+2025-04-29 15:14:15,915 - mmrotate - INFO - Epoch [30][300/625]	lr: 3.736e-06, eta: 0:02:08, time: 0.414, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0101, loss_rpn_bbox: 0.0118, loss_cls: 0.0457, acc: 98.1958, loss_bbox: 0.0712, loss: 0.1388, grad_norm: 0.8953
+2025-04-29 15:14:36,281 - mmrotate - INFO - Epoch [30][350/625]	lr: 3.736e-06, eta: 0:01:48, time: 0.407, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0107, loss_rpn_bbox: 0.0124, loss_cls: 0.0454, acc: 98.1899, loss_bbox: 0.0717, loss: 0.1402, grad_norm: 0.9050
+2025-04-29 15:14:56,851 - mmrotate - INFO - Epoch [30][400/625]	lr: 3.736e-06, eta: 0:01:29, time: 0.411, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0105, loss_rpn_bbox: 0.0128, loss_cls: 0.0467, acc: 98.1479, loss_bbox: 0.0679, loss: 0.1379, grad_norm: 0.9287
+2025-04-29 15:15:17,272 - mmrotate - INFO - Epoch [30][450/625]	lr: 3.736e-06, eta: 0:01:09, time: 0.408, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0111, loss_rpn_bbox: 0.0126, loss_cls: 0.0464, acc: 98.1377, loss_bbox: 0.0711, loss: 0.1412, grad_norm: 0.9036
+2025-04-29 15:15:37,723 - mmrotate - INFO - Epoch [30][500/625]	lr: 3.736e-06, eta: 0:00:49, time: 0.409, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0111, loss_rpn_bbox: 0.0133, loss_cls: 0.0481, acc: 98.0886, loss_bbox: 0.0718, loss: 0.1444, grad_norm: 0.9661
+2025-04-29 15:15:58,083 - mmrotate - INFO - Epoch [30][550/625]	lr: 3.736e-06, eta: 0:00:29, time: 0.407, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0103, loss_rpn_bbox: 0.0134, loss_cls: 0.0495, acc: 98.0173, loss_bbox: 0.0729, loss: 0.1461, grad_norm: 0.9288
+2025-04-29 15:16:18,707 - mmrotate - INFO - Epoch [30][600/625]	lr: 3.736e-06, eta: 0:00:09, time: 0.412, data_time: 0.007, memory: 7208, loss_rpn_cls: 0.0111, loss_rpn_bbox: 0.0119, loss_cls: 0.0463, acc: 98.1545, loss_bbox: 0.0699, loss: 0.1392, grad_norm: 0.9139
+2025-04-29 15:16:28,996 - mmrotate - INFO - Saving checkpoint at 30 epochs
+2025-04-29 15:18:08,861 - mmrotate - INFO - 
++--------------------+--------+-------+--------+-------+
+| class              | gts    | dets  | recall | ap    |
++--------------------+--------+-------+--------+-------+
+| plane              | 8669   | 8885  | 0.842  | 0.811 |
+| baseball-diamond   | 639    | 1019  | 0.787  | 0.663 |
+| bridge             | 1436   | 2148  | 0.376  | 0.263 |
+| ground-track-field | 375    | 887   | 0.717  | 0.597 |
+| small-vehicle      | 137235 | 25912 | 0.096  | 0.091 |
+| large-vehicle      | 13958  | 20378 | 0.682  | 0.562 |
+| ship               | 36368  | 30658 | 0.605  | 0.604 |
+| tennis-court       | 1847   | 2204  | 0.867  | 0.817 |
+| basketball-court   | 431    | 771   | 0.541  | 0.471 |
+| storage-tank       | 10129  | 4919  | 0.361  | 0.357 |
+| soccer-ball-field  | 426    | 789   | 0.570  | 0.458 |
+| roundabout         | 556    | 1180  | 0.581  | 0.470 |
+| harbor             | 6107   | 9704  | 0.763  | 0.641 |
+| swimming-pool      | 1609   | 2262  | 0.621  | 0.566 |
+| helicopter         | 284    | 781   | 0.525  | 0.401 |
+| container-crane    | 71     | 323   | 0.000  | 0.000 |
++--------------------+--------+-------+--------+-------+
+| mAP                |        |       |        | 0.486 |
++--------------------+--------+-------+--------+-------+
+2025-04-29 15:18:08,894 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 15:18:08,894 - mmrotate - INFO - Epoch(val) [30][1536]	mAP: 0.4857
+2025-04-29 15:19:22,332 - mmrotate - INFO - Exp name: rotated_faster_rcnn_r50_fpn_1x_dota_le90_val_1p5.py
+2025-04-29 15:19:22,332 - mmrotate - INFO - Epoch(val) [30][384]	loss_rpn_cls_val: 0.0842, loss_rpn_bbox_val: 0.0175, loss_cls_val: 0.0979, acc_val: 97.0821, loss_bbox_val: 0.0978, loss_val: 0.2974
