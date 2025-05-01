@@ -1,7 +1,0 @@
-matplotlib>=3.4
-opencv-python
-terminaltables
-shapely
-tqdm
-scipy
-numpy
