@@ -1,0 +1,12 @@
+Testing: /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr/epoch_24.pth
+load checkpoint from local path: /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr/epoch_24.pth
+load checkpoint from local path: /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr/epoch_24.pth
+load checkpoint from local path: /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr/epoch_24.pth
+load checkpoint from local path: /teamspace/studios/this_studio/mmrotate/demo/rotated_frcnn_4_lr/epoch_24.pth
+The model and loaded state dict do not match exactly
+
+size mismatch for rpn_head.rpn_reg.weight: copying a param with shape torch.Size([12, 256, 1, 1]) from checkpoint, the shape in current model is torch.Size([18, 256, 1, 1]).
+size mismatch for rpn_head.rpn_reg.bias: copying a param with shape torch.Size([12]) from checkpoint, the shape in current model is torch.Size([18]).
+size mismatch for roi_head.bbox_head.fc_cls.weight: copying a param with shape torch.Size([17, 1024]) from checkpoint, the shape in current model is torch.Size([16, 1024]).
+size mismatch for roi_head.bbox_head.fc_cls.bias: copying a param with shape torch.Size([17]) from checkpoint, the shape in current model is torch.Size([16]).
+[                                                  ] 0/6140, elapsed: 0s, ETA:[                                ] 1/6140, 0.3 task/s, elapsed: 3s, ETA: 18621s[                                ] 2/6140, 0.7 task/s, elapsed: 3s, ETA:  9309s[                                ] 3/6140, 1.0 task/s, elapsed: 3s, ETA:  6205s[                                ] 4/6140, 1.3 task/s, elapsed: 3s, ETA:  4653s[                                ] 5/6140, 1.4 task/s, elapsed: 4s, ETA:  4364s[                                ] 6/6140, 1.7 task/s, elapsed: 4s, ETA:  3636s[                                ] 7/6140, 2.0 task/s, elapsed: 4s, ETA:  3116s[                                ] 8/6140, 2.2 task/s, elapsed: 4s, ETA:  2726s
